@@ -17,4 +17,19 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	running := true
+	for running {
+		// update logic
+		ev := screen.PollEvent()
+		switch ev := ev.(type) {
+		case *tcell.EventKey:
+			switch ev.Key() {
+			case tcell.KeyEscape:
+				running = false
+			}
+		}
+
+		// draw logic
+	}
 }

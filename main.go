@@ -17,6 +17,8 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	// game init
+	player := NewSprite('@', 10, 10)
 
 	running := true
 	for running {
@@ -28,8 +30,23 @@ func main() {
 			case tcell.KeyEscape:
 				running = false
 			}
+			switch ev.Rune() {
+			case 'w':
+				player.Y--
+			case 's':
+				player.Y++
+			case 'a':
+				player.X--
+			case 'd':
+				player.X++
+			}
 		}
 
 		// draw logic
+		screen.Clear()
+
+		player.Draw(screen)
+
+		screen.Show()
 	}
 }

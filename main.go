@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"math/rand"
 	"time"
 
 	"github.com/gdamore/tcell/v2"
@@ -12,6 +13,16 @@ func drawString(screen tcell.Screen, x, y int, s string) {
 	for i, r := range s {
 		screen.SetContent(x+i, y, r, nil, tcell.StyleDefault)
 	}
+}
+
+func generateCoins(level int) []*Sprite {
+	coins := make([]*Sprite, level + 2)
+
+	for i := range level + 2 {
+		coins[i] = NewSprite('o', rand.Intn(120) + 5, rand.Intn(32) + 5)
+	}
+
+	return coins
 }
 
 func main() {
@@ -25,14 +36,11 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	// game init
 	player := NewSprite('@', 10, 10)
-	coins := []*Sprite{
-		NewSprite('o', 10, 50),
-		NewSprite('o', 20, 32),
-		NewSprite('o', 30, 28),
-		NewSprite('o', 40, 15),
-	}
+	level := 1
+	coins := generateCoins(level)	
 	score := 0
 	fps := 0
 	frameCount := 0
@@ -52,23 +60,23 @@ func main() {
 				running = false
 			}
 			switch ev.Rune() {
-			case 'w':
+			case 'k', 'w':
 				if player.Y > 0 {
 					player.Y--
 					playerMoved = true
 				}
-			case 's':
-				if player.Y < 100 {
+			case 'j', 's':
+				if player.Y < 42 {
 					player.Y++
 					playerMoved = true
 				}
-			case 'a':
+			case 'h', 'a':
 				if player.X > 0 {
 					player.X--
 					playerMoved = true
 				}
-			case 'd':
-				if player.X < 100 {
+			case 'l', 'd':
+				if player.X < 130 {
 					player.X++
 					playerMoved = true
 				}
@@ -81,6 +89,11 @@ func main() {
 					coins[i] = coins[len(coins)-1]
 					coins = coins[:len(coins)-1]
 					score++
+					if len(coins) == 0 {
+						level++
+						coins = generateCoins(level)
+						score = 0
+					}
 					break
 				}
 			}
@@ -93,10 +106,12 @@ func main() {
 		for _, coin := range coins {
 			coin.Draw(screen)
 		}
-		drawString(screen, 0, 0, fmt.Sprintf("Score: %d", score))
-		drawString(screen, 0, 1, fmt.Sprintf("FPS: %d", fps))
+		drawString(screen, 0, 0, fmt.Sprintf("Level: %d", level))
+		drawString(screen, 0, 1, fmt.Sprintf("Coins: %d/%d", score, level+2))
+		drawString(screen, 0, 2, fmt.Sprintf("FPS: %d", fps))
 
 		screen.Show()
+		
 
 		frameCount++
 		if time.Since(lastFPSUpdate) >= time.Second {

@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/gdamore/tcell/v2"
 )
@@ -33,11 +34,15 @@ func main() {
 		NewSprite('o', 40, 15),
 	}
 	score := 0
+	fps := 0
+	frameCount := 0
+	lastFPSUpdate := time.Now()
 
 	running := true
 	for running {
 		// update logic
 		playerMoved := false
+		// start := time.Now()
 
 		ev := screen.PollEvent()
 		switch ev := ev.(type) {
@@ -48,17 +53,25 @@ func main() {
 			}
 			switch ev.Rune() {
 			case 'w':
-				player.Y--
-				playerMoved = true
+				if player.Y > 0 {
+					player.Y--
+					playerMoved = true
+				}
 			case 's':
-				player.Y++
-				playerMoved = true
+				if player.Y < 100 {
+					player.Y++
+					playerMoved = true
+				}
 			case 'a':
-				player.X--
-				playerMoved = true
+				if player.X > 0 {
+					player.X--
+					playerMoved = true
+				}
 			case 'd':
-				player.X++
-				playerMoved = true
+				if player.X < 100 {
+					player.X++
+					playerMoved = true
+				}
 			}
 		}
 
@@ -81,7 +94,15 @@ func main() {
 			coin.Draw(screen)
 		}
 		drawString(screen, 0, 0, fmt.Sprintf("Score: %d", score))
+		drawString(screen, 0, 1, fmt.Sprintf("FPS: %d", fps))
 
 		screen.Show()
+
+		frameCount++
+		if time.Since(lastFPSUpdate) >= time.Second {
+			fps = frameCount
+			frameCount = 0
+			lastFPSUpdate = time.Now()
+		}
 	}
 }

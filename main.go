@@ -8,6 +8,23 @@ import (
 
 	"github.com/gdamore/tcell/v2"
 )
+type Projectile struct {
+	Sprite *Sprite
+	SpeedX, SpeedY int
+}
+
+func NewProjectile(x, y, sx, sy int) *Projectile {
+	return &Projectile{
+		Sprite: NewSprite('*', rand.Intn(120) + 5, rand.Intn(32) + 5),
+		SpeedX: x,
+		SpeedY: y,
+	}
+}
+
+func (p *Projectile) Update() {
+	p.Sprite.X += p.SpeedX
+	p.Sprite.Y += p.SpeedY
+}
 
 func drawString(screen tcell.Screen, x, y int, s string) {
 	for i, r := range s {
@@ -25,6 +42,40 @@ func generateCoins(level int) []*Sprite {
 	return coins
 }
 
+func generateProjectiles(level int) []*Projectile {
+	projectiles := make([]*Projectile, level * 4)
+
+	for i := range level * 4 {
+		spawn := rand.Intn(4)
+		var x, y, sx, sy int
+		switch spawn {
+		case 0:
+			x = rand.Intn(120) + 5
+			y = 0
+			sx = 0
+			sy = 1
+		case 1:
+			x = 140
+			y = rand.Intn(32) + 5
+			sx = -1
+			sy =0
+		case 2:
+			x = rand.Intn(120) + 5
+			y = 45
+			sx = 0
+			sy = -1
+		case 3:
+			x = 0
+			y = rand.Intn(32) + 5
+			sx = 1
+			sy = 0
+		}
+		projectiles[i] = NewProjectile(x, y, sx, sy)
+	}
+
+	return projectiles
+}
+
 func main() {
 	screen, err := tcell.NewScreen()
 	if err != nil {
@@ -40,18 +91,20 @@ func main() {
 	// game init
 	player := NewSprite('@', 10, 10)
 	level := 1
-	coins := generateCoins(level)	
+	coins := generateCoins(level)
+	projectiles := generateProjectiles(level)
 	score := 0
 	fps := 0
 	frameCount := 0
 	lastFPSUpdate := time.Now()
 
+	ticker := time.NewTicker(time.Millisecond * 16) // ~60 FPS
+	defer ticker.Stop()
+
 	running := true
 	for running {
 		// update logic
 		playerMoved := false
-		// start := time.Now()
-
 		ev := screen.PollEvent()
 		switch ev := ev.(type) {
 		case *tcell.EventKey:
@@ -92,10 +145,19 @@ func main() {
 					if len(coins) == 0 {
 						level++
 						coins = generateCoins(level)
+						projectiles = generateProjectiles(level)
 						score = 0
 					}
 					break
 				}
+			}
+		}
+
+		for i, projectile := range projectiles {
+			projectile.Update()
+			if projectile.Sprite.X < 0 || projectile.Sprite.X > 120 || projectile.Sprite.Y < 0 || projectile.Sprite.Y > 45 {
+				projectiles[i] = projectiles[len(projectiles)-1]
+				projectiles = projectiles[:len(projectiles)-1]
 			}
 		}
 
@@ -106,6 +168,10 @@ func main() {
 		for _, coin := range coins {
 			coin.Draw(screen)
 		}
+		for _, projectile := range projectiles {
+			projectile.Sprite.Draw(screen)
+		}
+
 		drawString(screen, 0, 0, fmt.Sprintf("Level: %d", level))
 		drawString(screen, 0, 1, fmt.Sprintf("Coins: %d/%d", score, level+2))
 		drawString(screen, 0, 2, fmt.Sprintf("FPS: %d", fps))
@@ -119,5 +185,7 @@ func main() {
 			frameCount = 0
 			lastFPSUpdate = time.Now()
 		}
+
+		<-ticker.C
 	}
 }

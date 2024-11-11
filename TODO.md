@@ -1,6 +1,5 @@
 # TODO
 
-- add projectiles that move in one direction!!!
-  - scale amount with level
-  - scale speed with level
-    - how ? im not sure lol
+- add better infra for multiple screens
+- add stats screen
+- add high score to game UI

@@ -4,10 +4,24 @@ import (
 	"fmt"
 	"log"
 	"math"
+	"os"
 	"time"
 
 	"github.com/gdamore/tcell/v2"
 )
+
+func InitLogs() *os.File {
+	// Open a file for logging
+	file, err := os.OpenFile("app.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Set the log output to the file
+	log.SetOutput(file)
+
+	return file
+}
 
 func main() {
 	screen, err := tcell.NewScreen()
@@ -25,7 +39,7 @@ func main() {
 	coinColor := tcell.StyleDefault.Foreground(tcell.ColorYellow)
 	projectileColor := tcell.StyleDefault.Foreground(tcell.ColorRed)
 	
-	initLog()
+	InitLogs()
 	InitSaves()
 
 	// main menu screen

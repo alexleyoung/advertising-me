@@ -3,23 +3,9 @@ package main
 import (
 	"database/sql"
 	"log"
-	"os"
 
 	_ "github.com/mattn/go-sqlite3"
 )
-
-func initLog() *os.File {
-	// Open a file for logging
-	file, err := os.OpenFile("app.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// Set the log output to the file
-	log.SetOutput(file)
-
-	return file
-}
 
 func InitSaves() {
 	db, err := sql.Open("sqlite3", "./game_data.db")

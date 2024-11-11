@@ -27,6 +27,7 @@ func InitSaves() {
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		player TEXT,
 		score INTEGER,
+		nearMisses INTEGER,
 		foreign key (player) references player(name)
 	);`
 
@@ -55,14 +56,14 @@ func CreatePlayer(name string) {
 	}
 }
 
-func SavePlayerData(name string, score int) {
+func SavePlayerData(name string, score int, nearMisses int) {
 	db, err := sql.Open("sqlite3", "./game_data.db")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer db.Close()
 
-	stmt, err := db.Prepare("INSERT INTO scores (player, score) VALUES (?, ?)")
+	stmt, err := db.Prepare("INSERT INTO scores (player, score, nearMisses) VALUES (?, ?, ?)")
 	if err != nil {
 		log.Fatal(err)
 	}

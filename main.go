@@ -67,9 +67,12 @@ func main() {
 	coins := GenerateCoins(level, coinColor)
 	projectiles := GenerateProjectiles(level, projectileColor)
 	coinCount := 0
-	score := 0
 	running := true
 	alive := true
+	
+	// fun stats
+	score := 0
+	nearMisses := 0
 	
 	fps := 0
 	frameCount := 0
@@ -150,6 +153,7 @@ func main() {
 				// chcek for near miss
 				if math.Abs(float64(projectile.Sprite.X - player.X)) == 1 && math.Abs(float64(projectile.Sprite.Y - player.Y)) == 1 {
 					score++
+					nearMisses++
 				}
 			}
 	
@@ -172,7 +176,7 @@ func main() {
 			screen.Show()
 		} else {
 			// save score
-			SavePlayerData(playerName, score)
+			SavePlayerData(playerName, score, nearMisses)
 
 			// game over screen
 			DrawString(screen, 70, 20, "GAME OVER")
@@ -192,9 +196,11 @@ func main() {
 					coins = GenerateCoins(level, coinColor)
 					projectiles = GenerateProjectiles(level, projectileColor)
 					coinCount = 0
-					score = 0
-					alive = true
 					running = true
+					alive = true
+					
+					score = 0
+					nearMisses = 0
 				}
 			}
 		}

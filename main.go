@@ -3,83 +3,10 @@ package main
 import (
 	"fmt"
 	"log"
-	"math/rand"
 	"time"
 
 	"github.com/gdamore/tcell/v2"
 )
-
-type Projectile struct {
-	Sprite *Sprite
-	SpeedX, SpeedY int
-}
-
-func NewProjectile(x, y, sx, sy int, color tcell.Style) *Projectile {
-	return &Projectile{
-		Sprite: NewSprite('*', x, y, color),
-		SpeedX: sx,
-		SpeedY: sy,
-	}
-}
-
-func (p *Projectile) Update() {
-	p.Sprite.X += p.SpeedX
-	p.Sprite.Y += p.SpeedY
-}
-
-func drawString(screen tcell.Screen, x, y int, s string) {
-	for i, r := range s {
-		screen.SetContent(x+i, y, r, nil, tcell.StyleDefault)
-	}
-}
-
-func generateCoins(level int, color tcell.Style) []*Sprite {
-	coins := make([]*Sprite, level + 2)
-
-	for i := range level + 2 {
-		coins[i] = NewSprite('o', rand.Intn(120) + 5, rand.Intn(32) + 5, color)
-	}
-
-	return coins
-}
-
-func generateProjectile(color tcell.Style) *Projectile {
-	spawn := rand.Intn(4)
-	var x, y, sx, sy int
-	switch spawn {
-	case 0:
-		x = rand.Intn(120) + 5
-		y = rand.Intn(5) - 5
-		sx = 0
-		sy = 1
-	case 1:
-		x = rand.Intn(5) + 140
-		y = rand.Intn(32) + 5
-		sx = -1
-		sy =0
-	case 2:
-		x = rand.Intn(120) + 5
-		y = rand.Intn(5) + 45
-		sx = 0
-		sy = -1
-	case 3:
-		x = rand.Intn(5) - 5 
-		y = rand.Intn(32) + 5
-		sx = 1
-		sy = 0
-	}
-	return NewProjectile(x, y, sx, sy, color)
-}
-
-func generateProjectiles(level int, color tcell.Style) []*Projectile {
-	projectiles := make([]*Projectile, level * 4)
-
-	for i := range level * 4 {
-		projectiles[i] = generateProjectile(color)	
-	}
-
-	return projectiles
-}
 
 func main() {
 	screen, err := tcell.NewScreen()
@@ -100,8 +27,8 @@ func main() {
 	// game init
 	player := NewSprite('@', 70, 20, playerColor)
 	level := 1
-	coins := generateCoins(level, coinColor)
-	projectiles := generateProjectiles(level, projectileColor)
+	coins := GenerateCoins(level, coinColor)
+	projectiles := GenerateProjectiles(level, projectileColor)
 	score := 0
 	running := true
 	alive := true
@@ -158,8 +85,8 @@ func main() {
 						score++
 						if len(coins) == 0 {
 							level++
-							coins = generateCoins(level, coinColor)
-							projectiles = generateProjectiles(level, projectileColor)
+							coins = GenerateCoins(level, coinColor)
+							projectiles = GenerateProjectiles(level, projectileColor)
 							score = 0
 						}
 						break
@@ -171,7 +98,7 @@ func main() {
 				projectile := projectiles[i]
 				projectile.Update()
 				if projectile.Sprite.X < -5 || projectile.Sprite.X > 150 || projectile.Sprite.Y < -5 || projectile.Sprite.Y > 50 {
-					projectiles[i] = generateProjectile(projectileColor)
+					projectiles[i] = GenerateProjectile(projectileColor)
 				}
 				if projectile.Sprite.Y == player.Y && projectile.Sprite.X == player.X {
 					alive = false
@@ -189,14 +116,14 @@ func main() {
 				projectile.Sprite.Draw(screen)
 			}
 	
-			drawString(screen, 0, 0, fmt.Sprintf("Level: %d", level))
-			drawString(screen, 0, 1, fmt.Sprintf("Coins: %d/%d", score, level+2))
-			drawString(screen, 0, 2, fmt.Sprintf("FPS: %d", fps))
+			DrawString(screen, 0, 0, fmt.Sprintf("Level: %d", level))
+			DrawString(screen, 0, 1, fmt.Sprintf("Coins: %d/%d", score, level+2))
+			DrawString(screen, 0, 2, fmt.Sprintf("FPS: %d", fps))
 	
 			screen.Show()
 		} else {
-			drawString(screen, 70, 20, "GAME OVER")
-			drawString(screen, 63, 22, "Press any key to restart")
+			DrawString(screen, 70, 20, "GAME OVER")
+			DrawString(screen, 63, 22, "Press any key to restart")
 			screen.Show()
 			ev := screen.PollEvent()
 			switch ev := ev.(type) {
@@ -208,8 +135,8 @@ func main() {
 					// reinitialize game
 					player = NewSprite('@', 70, 20, playerColor)
 					level = 1
-					coins = generateCoins(level, coinColor)
-					projectiles = generateProjectiles(level, projectileColor)
+					coins = GenerateCoins(level, coinColor)
+					projectiles = GenerateProjectiles(level, projectileColor)
 					score = 0
 					alive = true
 					running = true

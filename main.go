@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"math"
 	"time"
 
 	"github.com/gdamore/tcell/v2"
@@ -29,6 +30,7 @@ func main() {
 	level := 1
 	coins := GenerateCoins(level, coinColor)
 	projectiles := GenerateProjectiles(level, projectileColor)
+	coinCount := 0
 	score := 0
 	running := true
 	alive := true
@@ -77,31 +79,41 @@ func main() {
 			}
 		}	
 		if alive {
+			// coin collision check
 			if playerMoved {
 				for i, coin := range coins {
 					if coin.X == player.X && coin.Y == player.Y {
 						coins[i] = coins[len(coins)-1]
 						coins = coins[:len(coins)-1]
+						coinCount++
 						score++
 						if len(coins) == 0 {
 							level++
 							coins = GenerateCoins(level, coinColor)
 							projectiles = GenerateProjectiles(level, projectileColor)
-							score = 0
+							coinCount = 0
 						}
 						break
 					}
 				}
 			}
 			
+			// projectile collision check
 			for i := len(projectiles) - 1; i >= 0; i-- {
 				projectile := projectiles[i]
 				projectile.Update()
+
+				// respawn out of bounds projectiles
 				if projectile.Sprite.X < -5 || projectile.Sprite.X > 150 || projectile.Sprite.Y < -5 || projectile.Sprite.Y > 50 {
 					projectiles[i] = GenerateProjectile(projectileColor)
 				}
 				if projectile.Sprite.Y == player.Y && projectile.Sprite.X == player.X {
 					alive = false
+				}
+
+				// chcek for near miss
+				if math.Abs(float64(projectile.Sprite.X - player.X)) == 1 && math.Abs(float64(projectile.Sprite.Y - player.Y)) == 1 {
+					score++
 				}
 			}
 	
@@ -115,10 +127,10 @@ func main() {
 			for _, projectile := range projectiles {
 				projectile.Sprite.Draw(screen)
 			}
-	
-			DrawString(screen, 0, 0, fmt.Sprintf("Level: %d", level))
-			DrawString(screen, 0, 1, fmt.Sprintf("Coins: %d/%d", score, level+2))
-			DrawString(screen, 0, 2, fmt.Sprintf("FPS: %d", fps))
+			DrawString(screen, 0, 0, fmt.Sprintf("Score: %d", score))
+			DrawString(screen, 0, 1, fmt.Sprintf("Level: %d", level))
+			DrawString(screen, 0, 2, fmt.Sprintf("Coins: %d/%d", coinCount, level+2))
+			DrawString(screen, 0, 3, fmt.Sprintf("FPS: %d", fps))
 	
 			screen.Show()
 		} else {
@@ -137,6 +149,7 @@ func main() {
 					level = 1
 					coins = GenerateCoins(level, coinColor)
 					projectiles = GenerateProjectiles(level, projectileColor)
+					coinCount = 0
 					score = 0
 					alive = true
 					running = true

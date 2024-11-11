@@ -93,19 +93,21 @@ func main() {
 	}
 
 	// game init
-	player := NewSprite('@', 10, 10)
+	player := NewSprite('@', 70, 20)
 	level := 1
 	coins := generateCoins(level)
 	projectiles := generateProjectiles(level)
 	score := 0
+	running := true
+	alive := true
+	
+	// manage fps
 	fps := 0
 	frameCount := 0
 	lastFPSUpdate := time.Now()
-
 	ticker := time.NewTicker(time.Second / 30)
 	defer ticker.Stop()
 
-	running := true
 	for running {
 		// update logic
 		playerMoved := false
@@ -142,48 +144,73 @@ func main() {
 				}
 			}
 		}	
-
-		if playerMoved {
-			for i, coin := range coins {
-				if coin.X == player.X && coin.Y == player.Y {
-					coins[i] = coins[len(coins)-1]
-					coins = coins[:len(coins)-1]
-					score++
-					if len(coins) == 0 {
-						level++
-						coins = generateCoins(level)
-						projectiles = generateProjectiles(level)
-						score = 0
+		if alive {
+			if playerMoved {
+				for i, coin := range coins {
+					if coin.X == player.X && coin.Y == player.Y {
+						coins[i] = coins[len(coins)-1]
+						coins = coins[:len(coins)-1]
+						score++
+						if len(coins) == 0 {
+							level++
+							coins = generateCoins(level)
+							projectiles = generateProjectiles(level)
+							score = 0
+						}
+						break
 					}
-					break
+				}
+			}
+			
+			for i := len(projectiles) - 1; i >= 0; i-- {
+				projectile := projectiles[i]
+				projectile.Update()
+				if projectile.Sprite.X < -5 || projectile.Sprite.X > 150 || projectile.Sprite.Y < -5 || projectile.Sprite.Y > 50 {
+					projectiles[i] = generateProjectile()
+				}
+				if projectile.Sprite.Y == player.Y && projectile.Sprite.X == player.X {
+					alive = false
+				}
+			}
+	
+			// draw logic
+			screen.Clear()
+	
+			player.Draw(screen)
+			for _, coin := range coins {
+				coin.Draw(screen)
+			}
+			for _, projectile := range projectiles {
+				projectile.Sprite.Draw(screen)
+			}
+	
+			drawString(screen, 0, 0, fmt.Sprintf("Level: %d", level))
+			drawString(screen, 0, 1, fmt.Sprintf("Coins: %d/%d", score, level+2))
+			drawString(screen, 0, 2, fmt.Sprintf("FPS: %d", fps))
+	
+			screen.Show()
+		} else {
+			drawString(screen, 70, 20, "GAME OVER")
+			drawString(screen, 63, 22, "Press any key to restart")
+			screen.Show()
+			ev := screen.PollEvent()
+			switch ev := ev.(type) {
+			case *tcell.EventKey:
+				switch ev.Key() {
+				case tcell.KeyEscape:
+					running = false
+				case tcell.KeyRune:
+					// reinitialize game
+					player = NewSprite('@', 70, 20)
+					level = 1
+					coins = generateCoins(level)
+					projectiles = generateProjectiles(level)
+					score = 0
+					alive = true
+					running = true
 				}
 			}
 		}
-		
-		for i := len(projectiles) - 1; i >= 0; i-- {
-			projectile := projectiles[i]
-			projectile.Update()
-			if projectile.Sprite.X < -5 || projectile.Sprite.X > 150 || projectile.Sprite.Y < -5 || projectile.Sprite.Y > 50 {
-				projectiles[i] = generateProjectile()
-			}
-		}
-
-		// draw logic
-		screen.Clear()
-
-		player.Draw(screen)
-		for _, coin := range coins {
-			coin.Draw(screen)
-		}
-		for _, projectile := range projectiles {
-			projectile.Sprite.Draw(screen)
-		}
-
-		drawString(screen, 0, 0, fmt.Sprintf("Level: %d", level))
-		drawString(screen, 0, 1, fmt.Sprintf("Coins: %d/%d", score, level+2))
-		drawString(screen, 0, 2, fmt.Sprintf("FPS: %d", fps))
-
-		screen.Show()
 		
 
 		frameCount++

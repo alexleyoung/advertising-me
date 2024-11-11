@@ -15,9 +15,9 @@ type Projectile struct {
 
 func NewProjectile(x, y, sx, sy int) *Projectile {
 	return &Projectile{
-		Sprite: NewSprite('*', rand.Intn(120) + 5, rand.Intn(32) + 5),
-		SpeedX: x,
-		SpeedY: y,
+		Sprite: NewSprite('*', x, y),
+		SpeedX: sx,
+		SpeedY: sy,
 	}
 }
 
@@ -42,35 +42,39 @@ func generateCoins(level int) []*Sprite {
 	return coins
 }
 
+func generateProjectile() *Projectile {
+	spawn := rand.Intn(4)
+	var x, y, sx, sy int
+	switch spawn {
+	case 0:
+		x = rand.Intn(120) + 5
+		y = rand.Intn(5) - 5
+		sx = 0
+		sy = 1
+	case 1:
+		x = rand.Intn(5) + 140
+		y = rand.Intn(32) + 5
+		sx = -1
+		sy =0
+	case 2:
+		x = rand.Intn(120) + 5
+		y = rand.Intn(5) + 45
+		sx = 0
+		sy = -1
+	case 3:
+		x = rand.Intn(5) - 5 
+		y = rand.Intn(32) + 5
+		sx = 1
+		sy = 0
+	}
+	return NewProjectile(x, y, sx, sy)
+}
+
 func generateProjectiles(level int) []*Projectile {
 	projectiles := make([]*Projectile, level * 4)
 
 	for i := range level * 4 {
-		spawn := rand.Intn(4)
-		var x, y, sx, sy int
-		switch spawn {
-		case 0:
-			x = rand.Intn(120) + 5
-			y = 0
-			sx = 0
-			sy = 1
-		case 1:
-			x = 140
-			y = rand.Intn(32) + 5
-			sx = -1
-			sy =0
-		case 2:
-			x = rand.Intn(120) + 5
-			y = 45
-			sx = 0
-			sy = -1
-		case 3:
-			x = 0
-			y = rand.Intn(32) + 5
-			sx = 1
-			sy = 0
-		}
-		projectiles[i] = NewProjectile(x, y, sx, sy)
+		projectiles[i] = generateProjectile()	
 	}
 
 	return projectiles
@@ -98,7 +102,7 @@ func main() {
 	frameCount := 0
 	lastFPSUpdate := time.Now()
 
-	ticker := time.NewTicker(time.Millisecond * 16) // ~60 FPS
+	ticker := time.NewTicker(time.Second / 60)
 	defer ticker.Stop()
 
 	running := true
@@ -152,12 +156,12 @@ func main() {
 				}
 			}
 		}
-
-		for i, projectile := range projectiles {
+		
+		for i := len(projectiles) - 1; i >= 0; i-- {
+			projectile := projectiles[i]
 			projectile.Update()
-			if projectile.Sprite.X < 0 || projectile.Sprite.X > 120 || projectile.Sprite.Y < 0 || projectile.Sprite.Y > 45 {
-				projectiles[i] = projectiles[len(projectiles)-1]
-				projectiles = projectiles[:len(projectiles)-1]
+			if projectile.Sprite.X < -5 || projectile.Sprite.X > 150 || projectile.Sprite.Y < -5 || projectile.Sprite.Y > 50 {
+				projectiles[i] = generateProjectile()
 			}
 		}
 
@@ -185,7 +189,5 @@ func main() {
 			frameCount = 0
 			lastFPSUpdate = time.Now()
 		}
-
-		<-ticker.C
 	}
 }

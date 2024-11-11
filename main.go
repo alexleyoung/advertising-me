@@ -102,43 +102,46 @@ func main() {
 	frameCount := 0
 	lastFPSUpdate := time.Now()
 
-	ticker := time.NewTicker(time.Second / 60)
+	ticker := time.NewTicker(time.Second / 30)
 	defer ticker.Stop()
 
 	running := true
 	for running {
 		// update logic
 		playerMoved := false
-		ev := screen.PollEvent()
-		switch ev := ev.(type) {
-		case *tcell.EventKey:
-			switch ev.Key() {
-			case tcell.KeyEscape:
-				running = false
+		
+		if screen.HasPendingEvent() {
+			ev := screen.PollEvent()
+			switch ev := ev.(type) {
+			case *tcell.EventKey:
+				switch ev.Key() {
+				case tcell.KeyEscape:
+					running = false
+				}
+				switch ev.Rune() {
+				case 'k', 'w':
+					if player.Y > 0 {
+						player.Y--
+					}
+					playerMoved = true
+				case 'j', 's':
+					if player.Y < 42 {
+						player.Y++
+					}
+					playerMoved = true
+				case 'h', 'a':
+					if player.X > 0 {
+						player.X--
+					}
+					playerMoved = true
+				case 'l', 'd':
+					if player.X < 130 {
+						player.X++
+					}
+					playerMoved = true
+				}
 			}
-			switch ev.Rune() {
-			case 'k', 'w':
-				if player.Y > 0 {
-					player.Y--
-					playerMoved = true
-				}
-			case 'j', 's':
-				if player.Y < 42 {
-					player.Y++
-					playerMoved = true
-				}
-			case 'h', 'a':
-				if player.X > 0 {
-					player.X--
-					playerMoved = true
-				}
-			case 'l', 'd':
-				if player.X < 130 {
-					player.X++
-					playerMoved = true
-				}
-			}
-		}
+		}	
 
 		if playerMoved {
 			for i, coin := range coins {
@@ -189,5 +192,7 @@ func main() {
 			frameCount = 0
 			lastFPSUpdate = time.Now()
 		}
+
+		<-ticker.C
 	}
 }

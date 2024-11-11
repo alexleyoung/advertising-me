@@ -8,14 +8,15 @@ import (
 
 	"github.com/gdamore/tcell/v2"
 )
+
 type Projectile struct {
 	Sprite *Sprite
 	SpeedX, SpeedY int
 }
 
-func NewProjectile(x, y, sx, sy int) *Projectile {
+func NewProjectile(x, y, sx, sy int, color tcell.Style) *Projectile {
 	return &Projectile{
-		Sprite: NewSprite('*', x, y),
+		Sprite: NewSprite('*', x, y, color),
 		SpeedX: sx,
 		SpeedY: sy,
 	}
@@ -32,17 +33,17 @@ func drawString(screen tcell.Screen, x, y int, s string) {
 	}
 }
 
-func generateCoins(level int) []*Sprite {
+func generateCoins(level int, color tcell.Style) []*Sprite {
 	coins := make([]*Sprite, level + 2)
 
 	for i := range level + 2 {
-		coins[i] = NewSprite('o', rand.Intn(120) + 5, rand.Intn(32) + 5)
+		coins[i] = NewSprite('o', rand.Intn(120) + 5, rand.Intn(32) + 5, color)
 	}
 
 	return coins
 }
 
-func generateProjectile() *Projectile {
+func generateProjectile(color tcell.Style) *Projectile {
 	spawn := rand.Intn(4)
 	var x, y, sx, sy int
 	switch spawn {
@@ -67,14 +68,14 @@ func generateProjectile() *Projectile {
 		sx = 1
 		sy = 0
 	}
-	return NewProjectile(x, y, sx, sy)
+	return NewProjectile(x, y, sx, sy, color)
 }
 
-func generateProjectiles(level int) []*Projectile {
+func generateProjectiles(level int, color tcell.Style) []*Projectile {
 	projectiles := make([]*Projectile, level * 4)
 
 	for i := range level * 4 {
-		projectiles[i] = generateProjectile()	
+		projectiles[i] = generateProjectile(color)	
 	}
 
 	return projectiles
@@ -92,11 +93,15 @@ func main() {
 		log.Fatal(err)
 	}
 
+	playerColor := tcell.StyleDefault.Foreground(tcell.ColorTeal)
+	coinColor := tcell.StyleDefault.Foreground(tcell.ColorYellow)
+	projectileColor := tcell.StyleDefault.Foreground(tcell.ColorRed)
+
 	// game init
-	player := NewSprite('@', 70, 20)
+	player := NewSprite('@', 70, 20, playerColor)
 	level := 1
-	coins := generateCoins(level)
-	projectiles := generateProjectiles(level)
+	coins := generateCoins(level, coinColor)
+	projectiles := generateProjectiles(level, projectileColor)
 	score := 0
 	running := true
 	alive := true
@@ -153,8 +158,8 @@ func main() {
 						score++
 						if len(coins) == 0 {
 							level++
-							coins = generateCoins(level)
-							projectiles = generateProjectiles(level)
+							coins = generateCoins(level, coinColor)
+							projectiles = generateProjectiles(level, projectileColor)
 							score = 0
 						}
 						break
@@ -166,7 +171,7 @@ func main() {
 				projectile := projectiles[i]
 				projectile.Update()
 				if projectile.Sprite.X < -5 || projectile.Sprite.X > 150 || projectile.Sprite.Y < -5 || projectile.Sprite.Y > 50 {
-					projectiles[i] = generateProjectile()
+					projectiles[i] = generateProjectile(projectileColor)
 				}
 				if projectile.Sprite.Y == player.Y && projectile.Sprite.X == player.X {
 					alive = false
@@ -201,10 +206,10 @@ func main() {
 					running = false
 				case tcell.KeyRune:
 					// reinitialize game
-					player = NewSprite('@', 70, 20)
+					player = NewSprite('@', 70, 20, playerColor)
 					level = 1
-					coins = generateCoins(level)
-					projectiles = generateProjectiles(level)
+					coins = generateCoins(level, coinColor)
+					projectiles = generateProjectiles(level, projectileColor)
 					score = 0
 					alive = true
 					running = true

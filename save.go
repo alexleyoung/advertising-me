@@ -3,9 +3,23 @@ package main
 import (
 	"database/sql"
 	"log"
+	"os"
 
 	_ "github.com/mattn/go-sqlite3"
 )
+
+func initLog() *os.File {
+	// Open a file for logging
+	file, err := os.OpenFile("app.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Set the log output to the file
+	log.SetOutput(file)
+
+	return file
+}
 
 func InitSaves() {
 	db, err := sql.Open("sqlite3", "./game_data.db")
@@ -52,6 +66,9 @@ func CreatePlayer(name string) {
 
 	_, err = stmt.Exec(name)
 	if err != nil {
+		if err.Error() == "UNIQUE constraint failed: players.name" {
+			return
+		}
 		log.Fatal(err)
 	}
 }
@@ -69,26 +86,8 @@ func SavePlayerData(name string, score int, nearMisses int) {
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(name, score)
+	_, err = stmt.Exec(name, score, nearMisses)
 	if err != nil {
 		log.Fatal(err)
 	}
-}
-
-func PlayerExists(name string) bool {
-	db, err := sql.Open("sqlite3", "./game_data.db")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer db.Close()
-
-	row := db.QueryRow("SELECT name FROM players WHERE name = ?", name)
-	var exists bool
-
-	err = row.Scan(&exists)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return exists
 }

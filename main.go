@@ -25,6 +25,7 @@ func main() {
 	coinColor := tcell.StyleDefault.Foreground(tcell.ColorYellow)
 	projectileColor := tcell.StyleDefault.Foreground(tcell.ColorRed)
 	
+	initLog()
 	InitSaves()
 
 	// main menu screen
@@ -39,9 +40,7 @@ func main() {
 				mainMenu = false
 				panic("EXITED GAME")
 			case tcell.KeyEnter:
-				if !PlayerExists(playerName) {
-					CreatePlayer(playerName)
-				}
+				CreatePlayer(playerName)
 				mainMenu = false
 			case tcell.KeyBackspace, tcell.KeyBackspace2:
 				if len(playerName) > 0 {
@@ -196,7 +195,6 @@ func main() {
 					coins = GenerateCoins(level, coinColor)
 					projectiles = GenerateProjectiles(level, projectileColor)
 					coinCount = 0
-					running = true
 					alive = true
 					
 					score = 0

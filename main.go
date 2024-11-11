@@ -24,6 +24,42 @@ func main() {
 	playerColor := tcell.StyleDefault.Foreground(tcell.ColorTeal)
 	coinColor := tcell.StyleDefault.Foreground(tcell.ColorYellow)
 	projectileColor := tcell.StyleDefault.Foreground(tcell.ColorRed)
+	
+	InitSaves()
+
+	// main menu screen
+	mainMenu := true
+	playerName := ""
+	for mainMenu {
+		ev := screen.PollEvent()
+		switch ev := ev.(type) {
+		case *tcell.EventKey:
+			switch ev.Key() {
+			case tcell.KeyEscape:
+				mainMenu = false
+				panic("EXITED GAME")
+			case tcell.KeyEnter:
+				if !PlayerExists(playerName) {
+					CreatePlayer(playerName)
+				}
+				mainMenu = false
+			case tcell.KeyBackspace, tcell.KeyBackspace2:
+				if len(playerName) > 0 {
+					playerName = playerName[:len(playerName)-1]
+				}
+			case tcell.KeyRune:
+				playerName += string(ev.Rune())
+			}
+		}
+
+		screen.Clear()
+
+		DrawString(screen, 60, 20, "Welcome to Advertising Alex!")
+		DrawString(screen, 67, 22, "Who is playing?")
+		DrawString(screen, 69, 24, playerName)
+
+		screen.Show()
+	}
 
 	// game init
 	player := NewSprite('@', 70, 20, playerColor)
@@ -35,13 +71,13 @@ func main() {
 	running := true
 	alive := true
 	
-	// manage fps
 	fps := 0
 	frameCount := 0
 	lastFPSUpdate := time.Now()
 	ticker := time.NewTicker(time.Second / 30)
 	defer ticker.Stop()
 
+	// game loop
 	for running {
 		// update logic
 		playerMoved := false
@@ -127,16 +163,22 @@ func main() {
 			for _, projectile := range projectiles {
 				projectile.Sprite.Draw(screen)
 			}
-			DrawString(screen, 0, 0, fmt.Sprintf("Score: %d", score))
-			DrawString(screen, 0, 1, fmt.Sprintf("Level: %d", level))
-			DrawString(screen, 0, 2, fmt.Sprintf("Coins: %d/%d", coinCount, level+2))
-			DrawString(screen, 0, 3, fmt.Sprintf("FPS: %d", fps))
+			DrawString(screen, 0, 0, playerName)
+			DrawString(screen, 0, 1, fmt.Sprintf("Score: %d", score))
+			DrawString(screen, 0, 2, fmt.Sprintf("Level: %d", level))
+			DrawString(screen, 0, 3, fmt.Sprintf("Coins: %d/%d", coinCount, level+2))
+			DrawString(screen, 0, 4, fmt.Sprintf("FPS: %d", fps))
 	
 			screen.Show()
 		} else {
+			// save score
+			SavePlayerData(playerName, score)
+
+			// game over screen
 			DrawString(screen, 70, 20, "GAME OVER")
-			DrawString(screen, 63, 22, "Press any key to restart")
+			DrawString(screen, 55, 22, "Press any key to restart, or ESC to quit")
 			screen.Show()
+
 			ev := screen.PollEvent()
 			switch ev := ev.(type) {
 			case *tcell.EventKey:
@@ -157,7 +199,7 @@ func main() {
 			}
 		}
 		
-
+		// fps counter logic
 		frameCount++
 		if time.Since(lastFPSUpdate) >= time.Second {
 			fps = frameCount

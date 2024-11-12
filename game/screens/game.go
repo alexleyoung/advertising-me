@@ -118,7 +118,7 @@ func Game(screen tcell.Screen, g *game.Game) {
 			screen.Show()
 		} else {
 			// save score
-			game.SavePlayerData(g.Player.Name, g.Player.Score, g.Player.NearMisses)
+			game.SavePlayerData(g.Player.Name, g.Player.Score, g.Player.NearMisses, time.Now().Unix())
 
 			// game over screen
 			game.DrawString(screen, 70, 20, "GAME OVER")

@@ -60,20 +60,20 @@ func CreatePlayer(name string) {
 	}
 }
 
-func SavePlayerData(name string, score int, nearMisses int) {
+func SavePlayerData(name string, score int, nearMisses int, timestamp int64) {
 	db, err := sql.Open("sqlite3", "./game_data.db")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer db.Close()
 
-	stmt, err := db.Prepare("INSERT INTO scores (player, score, nearMisses) VALUES (?, ?, ?)")
+	stmt, err := db.Prepare("INSERT INTO scores (player, score, nearMisses, timestamp) VALUES (?, ?, ?, ?)")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(name, score, nearMisses)
+	_, err = stmt.Exec(name, score, nearMisses, timestamp)
 	if err != nil {
 		log.Fatal(err)
 	}

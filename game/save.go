@@ -77,3 +77,41 @@ func SavePlayerData(name string, score int, nearMisses int) {
 		log.Fatal(err)
 	}
 }
+
+type Score struct {
+	id int
+	Player string
+	Score int
+	NearMisses int
+}
+
+func GetHighScores() []*Score {
+	db, err := sql.Open("sqlite3", "./game_data.db")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
+	stmt, err := db.Prepare("SELECT * FROM scores ORDER BY score DESC LIMIT 10")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	scores := make([]*Score, 0)
+	for rows.Next() {
+		var score Score
+		err = rows.Scan(&score.id, &score.Player, &score.Score, &score.NearMisses)
+		if err != nil {
+			log.Fatal(err)
+		}
+		scores = append(scores, &score)
+	}
+
+	return scores
+}

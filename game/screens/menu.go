@@ -47,7 +47,10 @@ func MainMenu(screen tcell.Screen) *Action {
 					playerName = playerName[:len(playerName)-1]
 				}
 			case tcell.KeyTAB:
-				// go to stats screen
+				return &Action{
+					Type: "STATS",
+					Data: "",
+				}
 			case tcell.KeyRune:
 				playerName += string(ev.Rune())
 			}

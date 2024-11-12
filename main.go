@@ -23,7 +23,7 @@ func InitLogs() *os.File {
 func main() {
 	screen, err := tcell.NewScreen()
 	if err != nil {
-		log.Panicln(err)
+		log.Fatal(err)
 	}
 	defer screen.Fini()
 
@@ -33,7 +33,7 @@ func main() {
 	}
 
 	InitLogs()
-	InitSaves()
+	game.InitSaves()
 	
 	running := true
 	for running {
@@ -41,7 +41,9 @@ func main() {
 		switch action.Type {
 		case "PLAY":
 			game := game.InitGame(action.Data)
-			screens.GameLoop(screen, game)
+			screens.Game(screen, game)
+		case "STATS":
+			screens.Stats(screen)
 		case "EXIT":
 			running = false
 		}

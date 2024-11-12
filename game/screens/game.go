@@ -9,7 +9,7 @@ import (
 	"github.com/gdamore/tcell/v2"
 )
 
-func GameLoop(screen tcell.Screen, g *game.Game) {
+func Game(screen tcell.Screen, g *game.Game) {
 	playerColor := tcell.StyleDefault.Foreground(tcell.ColorTeal)
 	coinColor := tcell.StyleDefault.Foreground(tcell.ColorYellow)
 	projectileColor := tcell.StyleDefault.Foreground(tcell.ColorRed)

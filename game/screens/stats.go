@@ -14,13 +14,12 @@ func Stats(screen tcell.Screen) {
 	for _, score := range game.GetHighScores() {
 		t.AppendRow(table.Row{score.Player, score.Score, score.NearMisses})
 	}
-	t.SetStyle(table.StyleLight)
-	t.Style().Size.WidthMax = 50
-	t.Style().Size.WidthMin = 50
 	
 	stats := true
 	for stats {
 		screen.Clear()
+
+		game.DrawTable(screen, 0, 0, t)
 
 		screen.Show()
 

@@ -28,6 +28,7 @@ func InitSaves() {
 		player TEXT,
 		score INTEGER,
 		nearMisses INTEGER,
+		timestamp INTEGER,
 		foreign key (player) references player(name)
 	);`
 

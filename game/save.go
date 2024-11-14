@@ -72,7 +72,40 @@ func CreatePlayer(name string) {
 		}
 		log.Fatal(err)
 	}
+}
 
+func GetPlayers() []string {
+	db, err := sql.Open("sqlite3", "./game_data.db")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
+	stmt, err := db.Prepare("SELECT name FROM players")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query()
+	if err != nil {
+		// if no rows, return empty slice
+		if err == sql.ErrNoRows {
+			return []string{}
+		}
+		log.Fatal(err)
+	}
+
+	players := make([]string, 0)
+	for rows.Next() {
+		var player string
+		err = rows.Scan(&player)
+		if err != nil {
+			log.Fatal(err)
+		}
+		players = append(players, player)
+	}
+	return players
 }
 
 func SavePlayerData(name string, score int, nearMisses int, timestamp int64) {

@@ -7,4 +7,5 @@
 - make executable when done?
 - trails like tron
 - walls
-- player selection
+- make separate get player to reduce redundant calls
+- delete player from menu

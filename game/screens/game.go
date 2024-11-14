@@ -125,11 +125,12 @@ func Game(screen tcell.Screen, g *game.Game) {
 			
 			<-ticker.C
 		} else {
+			// player death logic
 			// save score
 			game.SavePlayerData(g.Player.Name, g.Player.Score, g.Player.NearMisses, time.Now().Unix())
 			game.AddCoins(g.Player.Name, g.Player.Coins)
 
-			// game over screen
+			// draw game over screen
 			game.DrawString(screen, 70, 20, "GAME OVER")
 			game.DrawString(screen, 50, 22, "Press any key to restart, or ESC to go back to the hub")
 			screen.Show()
@@ -154,16 +155,7 @@ func Game(screen tcell.Screen, g *game.Game) {
 					return
 				case tcell.KeyRune:
 					// reinitialize game
-					g.Player.Sprite = game.NewSprite('@', 70, 20, playerColor)
-					g.Level = 1
-					g.Coins = game.GenerateCoins(g.Level, coinColor)
-					g.Projectiles = game.GenerateProjectiles(g.Level, projectileColor)
-					g.CoinCount = 0
 					g.Alive = true
-					
-					g.Player.Coins = 0
-					g.Player.Score = 0
-					g.Player.NearMisses = 0
 				}
 			}
 		}

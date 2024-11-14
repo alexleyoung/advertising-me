@@ -1,11 +1,18 @@
 # TODO
 
-- add scalable size
-- add stats screen
-- add high score to game UI
+## infra
+
+- ascii renderer
+  - encode ascii
+  - allow to loop over each pixel
 - add better infra for arbitrary screen sizes
-- make executable when done?
-- trails like tron
-- walls
+- wall/map generation
 - make separate get player to reduce redundant calls
+- make executable
+
+## features
+
+- add border around screen (for debug and clarity)
+- trails like tron
 - delete player from menu
+- add high score to game UI

@@ -28,12 +28,14 @@ func MainMenu(screen tcell.Screen) *Action {
 				game.DrawString(screen, 69, 24+i, player)
 			}
 		}
+		game.DrawString(screen, 57, 24 + len(players), "new player: ")
 		if selected == len(players) {
-			game.DrawColorString(screen, 57, 24 + len(players), "new player: " + playerName, tcell.StyleDefault.Foreground(tcell.ColorOrangeRed))
-		} else {
-			game.DrawString(screen, 57, 24 + len(players), "new player: " + playerName)
+			if len(playerName) == 0 {
+				game.DrawColorString(screen, 69, 24 + len(players), "_", tcell.StyleDefault.Foreground(tcell.ColorOrangeRed))
+			} else {
+				game.DrawColorString(screen, 69, 24 + len(players), playerName, tcell.StyleDefault.Foreground(tcell.ColorOrangeRed))
+			}
 		}
-
 		screen.Show()
 
 		ev := screen.PollEvent()

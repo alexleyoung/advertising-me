@@ -22,8 +22,12 @@ func Stats(screen tcell.Screen) {
 		screen.Clear()
 
 		// game.DrawTable(screen, 0, 0, t)
+		game.DrawString(screen, 0, 0, "PLAYER | SCORE | NEAR MISSES | TIMESTAMP")
 		for i, score := range scores {
-			game.DrawString(screen, 0, i, score.Player + " " + strconv.Itoa(score.Score) + " " + strconv.Itoa(score.NearMisses) + " " + time.Unix(int64(score.Timestamp), 0).Format("Jan 2 2006 03:04 PM"))
+			game.DrawString(screen, 0, 1+i, score.Player + 
+				" | " + strconv.Itoa(score.Score) + 
+				" | " + strconv.Itoa(score.NearMisses) + 
+				" | " + time.Unix(int64(score.Timestamp), 0).Format("Jan 2 2006 03:04 PM"))
 		} 
 
 		screen.Show()

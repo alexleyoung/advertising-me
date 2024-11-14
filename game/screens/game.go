@@ -22,7 +22,6 @@ func Game(screen tcell.Screen, g *game.Game) {
 	
 	for {
 		if g.Alive {
-
 			// Player movement
 			playerMoved := false
 			if screen.HasPendingEvent() {
@@ -112,7 +111,7 @@ func Game(screen tcell.Screen, g *game.Game) {
 			game.DrawString(screen, 0, 1, fmt.Sprintf("Score: %d", g.Player.Score))
 			game.DrawString(screen, 0, 2, fmt.Sprintf("Level: %d", g.Level))
 			game.DrawString(screen, 0, 3, fmt.Sprintf("Coins: %d/%d", g.CoinCount, g.Level+2))
-			game.DrawString(screen, 0, 4, fmt.Sprintf("FPS: %d", fps))
+			game.DrawString(screen, 147, 0, fmt.Sprintf("FPS: %d", fps))
 	
 			screen.Show()
 	
@@ -128,6 +127,7 @@ func Game(screen tcell.Screen, g *game.Game) {
 		} else {
 			// save score
 			game.SavePlayerData(g.Player.Name, g.Player.Score, g.Player.NearMisses, time.Now().Unix())
+			game.AddCoins(g.Player.Name, g.Player.Coins)
 
 			// game over screen
 			game.DrawString(screen, 70, 20, "GAME OVER")
@@ -149,6 +149,7 @@ func Game(screen tcell.Screen, g *game.Game) {
 					g.CoinCount = 0
 					g.Alive = true
 					
+					g.Player.Coins = 0
 					g.Player.Score = 0
 					g.Player.NearMisses = 0
 				}

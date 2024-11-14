@@ -30,6 +30,7 @@ func InitGame(playerName string) *Game {
 			Name: playerName,
 			Score: 0,
 			NearMisses: 0,
+			Coins: 0,
 		},
 		Level: 1,
 		Coins: GenerateCoins(1, tcell.StyleDefault.Foreground(tcell.ColorYellow)),

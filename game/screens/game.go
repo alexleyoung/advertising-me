@@ -134,11 +134,23 @@ func Game(screen tcell.Screen, g *game.Game) {
 			game.DrawString(screen, 50, 22, "Press any key to restart, or ESC to go back to the hub")
 			screen.Show()
 
+			// reinitialize game
+			g.Player.Sprite = game.NewSprite('@', 70, 20, playerColor)
+			g.Level = 1
+			g.Coins = game.GenerateCoins(g.Level, coinColor)
+			g.Projectiles = game.GenerateProjectiles(g.Level, projectileColor)
+			g.CoinCount = 0
+			
+			g.Player.Coins = 0
+			g.Player.Score = 0
+			g.Player.NearMisses = 0
+
 			ev := screen.PollEvent()
 			switch ev := ev.(type) {
 			case *tcell.EventKey:
 				switch ev.Key() {
 				case tcell.KeyEscape:
+					g.Alive = true
 					return
 				case tcell.KeyRune:
 					// reinitialize game

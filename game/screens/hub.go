@@ -77,7 +77,9 @@ func Hub(screen tcell.Screen, g *game.Game) *Action {
 
 		// check collisions with portals
 		if g.Player.Sprite.Y == PLAY_PORTAL_Y && g.Player.Sprite.X == PLAY_PORTAL_X {
+			g.Alive = true
 			Game(screen, g)
+			coins = game.GetCoins(g.Player.Name)
 		}
 		
 		// fps counter logic

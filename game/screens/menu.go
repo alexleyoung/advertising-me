@@ -29,9 +29,9 @@ func MainMenu(screen tcell.Screen) *Action {
 			}
 		}
 		if selected == len(players) {
-			game.DrawColorString(screen, 69, 24 + len(players), "new player: " + playerName, tcell.StyleDefault.Foreground(tcell.ColorOrangeRed))
+			game.DrawColorString(screen, 57, 24 + len(players), "new player: " + playerName, tcell.StyleDefault.Foreground(tcell.ColorOrangeRed))
 		} else {
-			game.DrawString(screen, 69, 24 + len(players), "new player: " + playerName)
+			game.DrawString(screen, 57, 24 + len(players), "new player: " + playerName)
 		}
 
 		screen.Show()

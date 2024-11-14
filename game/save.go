@@ -84,6 +84,7 @@ type Score struct {
 	Player string
 	Score int
 	NearMisses int
+	Timestamp int
 }
 
 func GetHighScores() []*Score {
@@ -107,7 +108,7 @@ func GetHighScores() []*Score {
 	scores := make([]*Score, 0)
 	for rows.Next() {
 		var score Score
-		err = rows.Scan(&score.id, &score.Player, &score.Score, &score.NearMisses)
+		err = rows.Scan(&score.id, &score.Player, &score.Score, &score.NearMisses, &score.Timestamp)
 		if err != nil {
 			log.Fatal(err)
 		}

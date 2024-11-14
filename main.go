@@ -41,7 +41,7 @@ func main() {
 		switch action.Type {
 		case "PLAY":
 			game := game.InitGame(action.Data)
-			screens.Game(screen, game)
+			screens.Hub(screen, game)
 		case "STATS":
 			screens.Stats(screen)
 		case "EXIT":

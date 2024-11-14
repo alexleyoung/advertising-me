@@ -13,21 +13,17 @@ func DrawString(screen tcell.Screen, x, y int, s string) {
 
 func DrawTable(screen tcell.Screen, x, y int, t table.Writer) {
 	t.SetStyle(table.StyleLight)
-	t.Style().Box.TopRight = "*"
-	t.Style().Box.BottomRight = "*"
-	t.Style().Box.Right = "*"
 	t.Style().Size.WidthMax = 20
 
-	// content := t.Render()
+	content := t.Render()
 	
-	// row := x
-	// col := y
-	// for _, char := range content {
-	// 	if char == '*' {
-	// 		col += 1
-	// 		row = x
-	// 	}
-	// 	screen.SetContent(row, col, char, nil, tcell.StyleDefault)
-	// }
-	DrawString(screen, x, y, t.Render())
+	row := x
+	col := y
+	for _, char := range content {
+		if char == '\n' {
+			col += 1
+			row = x
+		}
+		screen.SetContent(row, col, char, nil, tcell.StyleDefault)
+	}
 }

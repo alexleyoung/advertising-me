@@ -66,6 +66,7 @@ func Game(screen tcell.Screen, g *game.Game) {
 						g.Coins = g.Coins[:len(g.Coins)-1]
 						g.CoinCount++
 						g.Player.Score++
+						g.Player.Coins++
 						if len(g.Coins) == 0 {
 							g.Level++
 							g.Coins = game.GenerateCoins(g.Level, coinColor)

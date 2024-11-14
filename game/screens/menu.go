@@ -52,6 +52,9 @@ func MainMenu(screen tcell.Screen) *Action {
 					Data: "",
 				}
 			case tcell.KeyRune:
+				if (ev.Rune() == ' ') {
+					break
+				}
 				playerName += string(ev.Rune())
 			}
 		}	

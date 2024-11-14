@@ -10,6 +10,11 @@ func DrawString(screen tcell.Screen, x, y int, s string) {
 		screen.SetContent(x+i, y, r, nil, tcell.StyleDefault)
 	}
 }
+func DrawColorString(screen tcell.Screen, x, y int, s string, color tcell.Style) {
+	for i, r := range s {
+		screen.SetContent(x+i, y, r, nil, color)
+	}
+}
 
 func DrawTable(screen tcell.Screen, x, y int, t table.Writer) {
 	t.SetStyle(table.StyleLight)

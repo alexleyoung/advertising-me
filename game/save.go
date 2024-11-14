@@ -3,6 +3,7 @@ package game
 import (
 	"database/sql"
 	"log"
+	"strings"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -14,31 +15,42 @@ func InitSaves() {
     }
     defer db.Close()
 
-    createTableSQL := `CREATE TABLE IF NOT EXISTS players (
+    createTableSQL := `
+	CREATE TABLE IF NOT EXISTS players (
         name TEXT PRIMARY KEY
-    );`
-    
-    _, err = db.Exec(createTableSQL)
-    if err != nil {
-        log.Fatal(err)
-    }
-
-	createTableSQL = `CREATE TABLE IF NOT EXISTS scores (
+    );
+	
+	CREATE TABLE IF NOT EXISTS scores (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		player TEXT,
 		score INTEGER,
 		nearMisses INTEGER,
 		timestamp INTEGER,
 		foreign key (player) references player(name)
-	);`
+	);
 
-	_, err = db.Exec(createTableSQL)
-	if err != nil {
-		log.Fatal(err)
-	}
+	CREATE TABLE IF NOT EXISTS inventory (
+		player TEXT,
+		item TEXT,
+		count INTEGER,
+		foreign key (player) references player(name)
+		foreign key (item) references items(name)
+		primary key (player, item)
+	);
+
+	CREATE TABLE IF NOT EXISTS items (
+		name TEXT PRIMARY KEY
+	);
+	`
+    
+    _, err = db.Exec(createTableSQL)
+    if err != nil {
+        log.Fatal(err)
+    }
 }
 
 func CreatePlayer(name string) {
+	name = strings.ToLower(name)
 	db, err := sql.Open("sqlite3", "./game_data.db")
 	if err != nil {
 		log.Fatal(err)
@@ -116,4 +128,28 @@ func GetHighScores() []*Score {
 	}
 
 	return scores
+}
+
+func AddCoins(name string, count int) {
+	db, err := sql.Open("sqlite3", "./game_data.db")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
+	stmt, err := db.Prepare(`
+	INSERT INTO inventory (player, item, count) 
+	VALUES (?, ?, ?) 
+	ON CONFLICT (player, item) 
+	DO UPDATE SET count = inventory.count + excluded.count
+	`) 
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(name, "coins", count)
+	if err != nil {
+		log.Fatal(err)
+	}
 }

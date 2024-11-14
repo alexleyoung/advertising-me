@@ -7,3 +7,4 @@
 - make executable when done?
 - trails like tron
 - walls
+- player selection

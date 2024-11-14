@@ -9,6 +9,7 @@ import (
 type Player struct {
 	Sprite *Sprite
 	Name string
+	Coins int
 	Score int
 	NearMisses int
 }

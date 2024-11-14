@@ -40,8 +40,8 @@ func main() {
 		action := screens.MainMenu(screen)
 		switch action.Type {
 		case "PLAY":
-			game := game.InitGame(action.Data)
-			screens.Hub(screen, game)
+			g := game.InitGame(action.Data)
+			screens.Hub(screen, g)
 		case "STATS":
 			screens.Stats(screen)
 		case "EXIT":

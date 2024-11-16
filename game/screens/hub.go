@@ -18,6 +18,9 @@ func Hub(screen tcell.Screen, g *game.Game) *Action {
 	PLAY_PORTAL_X := 15
 	PLAY_PORTAL_Y := 25
 
+	SHOP_PORTAL_X := 70
+	SHOP_PORTAL_Y := 10
+
 	coins := game.GetCoins(g.Player.Name)
 
 	// game loop
@@ -39,6 +42,8 @@ func Hub(screen tcell.Screen, g *game.Game) *Action {
 		screen.SetContent(PLAY_PORTAL_X+1, PLAY_PORTAL_Y, '|', nil, tcell.StyleDefault.Foreground(tcell.ColorPaleTurquoise))
 		screen.SetContent(PLAY_PORTAL_X+1, PLAY_PORTAL_Y+1, '|', nil, tcell.StyleDefault.Foreground(tcell.ColorPaleTurquoise))
 		screen.SetContent(PLAY_PORTAL_X+1, PLAY_PORTAL_Y+2, '|', nil, tcell.StyleDefault.Foreground(tcell.ColorPaleTurquoise))
+		// draw shop portal
+		screen.SetContent(SHOP_PORTAL_X, SHOP_PORTAL_Y, 'Q', nil, tcell.StyleDefault.Foreground(tcell.ColorFireBrick))
 
 		screen.Show()
 
@@ -76,10 +81,13 @@ func Hub(screen tcell.Screen, g *game.Game) *Action {
 		}	
 
 		// check collisions with portals
-		if g.Player.Sprite.Y == PLAY_PORTAL_Y && g.Player.Sprite.X == PLAY_PORTAL_X {
+		if g.Player.Sprite.X == PLAY_PORTAL_X && g.Player.Sprite.Y == PLAY_PORTAL_Y {
 			g.Alive = true
 			Game(screen, g)
 			coins = game.GetCoins(g.Player.Name)
+		}
+		if g.Player.Sprite.X == SHOP_PORTAL_X && g.Player.Sprite.Y == SHOP_PORTAL_Y {
+			Shop(screen, g)
 		}
 		
 		// fps counter logic

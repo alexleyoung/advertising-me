@@ -12,6 +12,7 @@
 
 ## features
 
+- shop
 - add border around screen (for debug and clarity)
 - trails like tron
 - delete player from menu

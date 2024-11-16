@@ -32,3 +32,8 @@ func DrawTable(screen tcell.Screen, x, y int, t table.Writer) {
 		screen.SetContent(row, col, char, nil, tcell.StyleDefault)
 	}
 }
+
+// func ImgToAscii(path string) string {
+// 	mat := quickscii.PreProcess(path)
+// 	return quickscii.Convert(mat)
+// }

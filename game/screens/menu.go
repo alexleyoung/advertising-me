@@ -19,6 +19,7 @@ func MainMenu(screen tcell.Screen) *Action {
 	for mainMenu {
 		screen.Clear()
 
+		// draw menu UI
 		game.DrawString(screen, 60, 20, "Welcome to Advertising Alex!")
 		game.DrawString(screen, 67, 22, "Who is playing?")
 		for i, player := range players {
@@ -36,11 +37,15 @@ func MainMenu(screen tcell.Screen) *Action {
 				game.DrawColorString(screen, 69, 24 + len(players), playerName, tcell.StyleDefault.Foreground(tcell.ColorOrangeRed))
 			}
 		}
+		
 		screen.Show()
-
+		
+		// handle inputs
+		lastInput := tcell.KeyRune
 		ev := screen.PollEvent()
 		switch ev := ev.(type) {
 		case *tcell.EventKey:
+			lastInput = ev.Key()
 			switch ev.Key() {
 			case tcell.KeyEscape:
 				mainMenu = false
@@ -62,6 +67,14 @@ func MainMenu(screen tcell.Screen) *Action {
 					selected--
 				}
 			case tcell.KeyBackspace, tcell.KeyBackspace2:
+				if selected != len(players) {
+					if lastInput == 127 {
+						players = append(players[:selected], players[selected+1:]...)
+						if selected >= len(players) {
+							selected = len(players) - 1
+						}
+					}
+				}
 				if len(playerName) > 0 {
 					playerName = playerName[:len(playerName)-1]
 				}

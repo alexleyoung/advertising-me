@@ -30,7 +30,7 @@ func Hub(screen tcell.Screen, g *game.Game) *Action {
 
 		// draw player
 		g.Player.Sprite.Draw(screen)
-		// draw coins ui
+		// draw ui
 		game.DrawString(screen, 0, 0, "Coins: " + strconv.Itoa(coins))
 		game.DrawString(screen, 147, 0, strconv.Itoa(fps))
 		// draw game portal
@@ -87,7 +87,8 @@ func Hub(screen tcell.Screen, g *game.Game) *Action {
 			coins = game.GetCoins(g.Player.Name)
 		}
 		if g.Player.Sprite.X == SHOP_PORTAL_X && g.Player.Sprite.Y == SHOP_PORTAL_Y {
-			Shop(screen, g)
+			Shop(screen, g, coins)
+			coins = game.GetCoins(g.Player.Name)
 		}
 		
 		// fps counter logic

@@ -2,16 +2,26 @@ package screens
 
 import (
 	"go-game/game"
+	"strconv"
 
 	"github.com/gdamore/tcell/v2"
 )
 
-func Shop(screen tcell.Screen, g *game.Game) {
+func Shop(screen tcell.Screen, g *game.Game, coins int) {
 	for {	
 		// draw logic
 		screen.Clear()
 
+		// draw ui
+		game.DrawString(screen, 0, 0, "Coins: " + strconv.Itoa(coins))
+
 		g.Player.Sprite.Draw(screen)
+
+		game.DrawString(screen, 70, 20, `
+			test
+			te
+			st
+		`)
 
 		screen.Show()
 

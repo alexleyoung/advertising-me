@@ -1,6 +1,7 @@
 package game
 
 import (
+	"github.com/alexleyoung/quickscii/quickscii"
 	"github.com/gdamore/tcell/v2"
 	"github.com/jedib0t/go-pretty/v6/table"
 )
@@ -33,7 +34,10 @@ func DrawTable(screen tcell.Screen, x, y int, t table.Writer) {
 	}
 }
 
-// func ImgToAscii(path string) string {
-// 	mat := quickscii.PreProcess(path)
-// 	return quickscii.Convert(mat)
-// }
+func ImgToAscii(path string, x, y int) string {
+	mat, err := quickscii.PreProcess(path, x, y)
+	if err != nil {
+		return ""
+	}
+	return quickscii.Convert(mat)
+}

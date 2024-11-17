@@ -7,31 +7,34 @@ import (
 )
 
 func DrawString(screen tcell.Screen, x, y int, s string) {
-	for i, r := range s {
-		screen.SetContent(x+i, y, r, nil, tcell.StyleDefault)
-	}
+    for _, r := range s {
+        if r == '\n' {
+            y++
+            x = 0
+            continue
+        }
+        screen.SetContent(x, y, r, nil, tcell.StyleDefault)
+        x++
+    }
 }
+
 func DrawColorString(screen tcell.Screen, x, y int, s string, color tcell.Style) {
-	for i, r := range s {
-		screen.SetContent(x+i, y, r, nil, color)
-	}
+    for _, r := range s {
+        if r == '\n' {
+            y++
+            x = 0
+            continue
+        }
+        screen.SetContent(x, y, r, nil, color)
+        x++
+    }
 }
 
 func DrawTable(screen tcell.Screen, x, y int, t table.Writer) {
 	t.SetStyle(table.StyleLight)
-	t.Style().Size.WidthMax = 20
 
 	content := t.Render()
-	
-	row := x
-	col := y
-	for _, char := range content {
-		if char == '\n' {
-			col += 1
-			row = x
-		}
-		screen.SetContent(row, col, char, nil, tcell.StyleDefault)
-	}
+	DrawString(screen, x, y, content)
 }
 
 func ImgToAscii(path string, x, y int) string {

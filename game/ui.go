@@ -43,12 +43,12 @@ func ImgToAscii(path string, x, y int) string {
 }
 
 func DrawRect(screen tcell.Screen, x, y, w, h int, style tcell.Style) {
-    for i := x; i < x+w; i++ {
-        screen.SetContent(i, y, '-', nil, style)
-        screen.SetContent(i, y+h, '-', nil, style)
-    }
     for j := y; j < y+h; j++ {
         screen.SetContent(x, j, '|', nil, style)
         screen.SetContent(x+w, j, '|', nil, style)
+    }
+    for i := x; i < x+w+1; i++ {
+        screen.SetContent(i, y, '-', nil, style)
+        screen.SetContent(i, y+h, '-', nil, style)
     }
 }

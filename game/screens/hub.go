@@ -82,6 +82,8 @@ func Hub(screen tcell.Screen, g *game.Game) *Action {
 
 		// check collisions with portals
 		if g.Player.Sprite.X == PLAY_PORTAL_X && g.Player.Sprite.Y == PLAY_PORTAL_Y {
+			g.Player.Sprite.X = 75
+			g.Player.Sprite.Y = 25
 			Game(screen, g)
 			g = game.InitGame(g.Player.Name)
 			coins = game.GetCoins(g.Player.Name)

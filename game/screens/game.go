@@ -10,6 +10,11 @@ import (
 )
 
 func Game(screen tcell.Screen, g *game.Game) {
+	MAP_HEIGHT := 45
+	MAP_WIDTH := 140
+	LEFT_BORDER_X := 5
+	TOP_BORDER_Y := 3
+
 	coinColor := tcell.StyleDefault.Foreground(tcell.ColorYellow)
 	projectileColor := tcell.StyleDefault.Foreground(tcell.ColorRed)
 
@@ -33,22 +38,22 @@ func Game(screen tcell.Screen, g *game.Game) {
 					}
 					switch ev.Rune() {
 					case 'k', 'w':
-						if g.Player.Sprite.Y > 0 {
+						if g.Player.Sprite.Y > TOP_BORDER_Y + 1 {
 							g.Player.Sprite.Y--
 						}
 						playerMoved = true
 					case 'j', 's':
-						if g.Player.Sprite.Y < 42 {
+						if g.Player.Sprite.Y < TOP_BORDER_Y + MAP_HEIGHT - 1 {
 							g.Player.Sprite.Y++
 						}
 						playerMoved = true
 					case 'h', 'a':
-						if g.Player.Sprite.X > 0 {
+						if g.Player.Sprite.X > LEFT_BORDER_X + 1 {
 							g.Player.Sprite.X--
 						}
 						playerMoved = true
 					case 'l', 'd':
-						if g.Player.Sprite.X < 130 {
+						if g.Player.Sprite.X < LEFT_BORDER_X + MAP_WIDTH - 1 {
 							g.Player.Sprite.X++
 						}
 						playerMoved = true
@@ -98,6 +103,8 @@ func Game(screen tcell.Screen, g *game.Game) {
 	
 			// draw logic
 			screen.Clear()
+
+			game.DrawRect(screen, LEFT_BORDER_X, TOP_BORDER_Y, MAP_WIDTH, MAP_HEIGHT, tcell.StyleDefault)
 	
 			g.Player.Sprite.Draw(screen)
 			for _, coin := range g.Coins {

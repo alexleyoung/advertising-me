@@ -1,2 +1,4 @@
 app.log
 game_data.db
+
+assets/*

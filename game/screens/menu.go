@@ -12,6 +12,7 @@ type Action struct {
 }
 
 func MainMenu(screen tcell.Screen) *Action {
+	game.AddCoins("alex", -5)
 	mainMenu := true
 	players := game.GetPlayers()
 	selected := 0

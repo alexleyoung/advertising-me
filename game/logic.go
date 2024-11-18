@@ -23,6 +23,11 @@ type Game struct {
 	CoinCount int
 }
 
+type Point struct {
+	X int
+	Y int
+}
+
 func InitGame(playerName string) *Game {
 	return &Game{
 		Player: Player{

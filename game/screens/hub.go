@@ -87,7 +87,11 @@ func Hub(screen tcell.Screen, g *game.Game) *Action {
 			coins = game.GetCoins(g.Player.Name)
 		}
 		if g.Player.Sprite.X == SHOP_PORTAL_X && g.Player.Sprite.Y == SHOP_PORTAL_Y {
+			g.Player.Sprite.X = 75
+			g.Player.Sprite.Y = 25
 			Shop(screen, g, coins)
+			g.Player.Sprite.X = SHOP_PORTAL_X
+			g.Player.Sprite.Y = SHOP_PORTAL_Y+ 1
 			coins = game.GetCoins(g.Player.Name)
 		}
 		

@@ -17,12 +17,6 @@ func Shop(screen tcell.Screen, g *game.Game, coins int) {
 
 		g.Player.Sprite.Draw(screen)
 
-		game.DrawString(screen, 70, 20, `
-			test
-			te
-			st
-		`)
-
 		screen.Show()
 
 		// movement

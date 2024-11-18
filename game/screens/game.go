@@ -10,7 +10,6 @@ import (
 )
 
 func Game(screen tcell.Screen, g *game.Game) {
-	playerColor := tcell.StyleDefault.Foreground(tcell.ColorTeal)
 	coinColor := tcell.StyleDefault.Foreground(tcell.ColorYellow)
 	projectileColor := tcell.StyleDefault.Foreground(tcell.ColorRed)
 
@@ -136,15 +135,7 @@ func Game(screen tcell.Screen, g *game.Game) {
 			screen.Show()
 
 			// reinitialize game
-			g.Player.Sprite = game.NewSprite('@', 70, 20, playerColor)
-			g.Level = 1
-			g.Coins = game.GenerateCoins(g.Level, coinColor)
-			g.Projectiles = game.GenerateProjectiles(g.Level, projectileColor)
-			g.CoinCount = 0
-			
-			g.Player.Coins = 0
-			g.Player.Score = 0
-			g.Player.NearMisses = 0
+			g = game.InitGame(g.Player.Name)
 
 			ev := screen.PollEvent()
 			switch ev := ev.(type) {

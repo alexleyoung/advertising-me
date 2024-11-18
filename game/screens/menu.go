@@ -42,7 +42,7 @@ func MainMenu(screen tcell.Screen) *Action {
 				game.DrawColorString(screen, 69, 24 + len(players), playerName, tcell.StyleDefault.Foreground(tcell.ColorOrangeRed))
 			}
 		}
-		if lastInput == 127 {
+		if lastInput == 127 && selected != len(players) {
 			game.DrawColorString(screen, 55, 30, "Press delete again to remove selected player", tcell.StyleDefault.Foreground(tcell.ColorRed)) 
 		}
 		

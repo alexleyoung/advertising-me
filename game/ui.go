@@ -7,14 +7,15 @@ import (
 )
 
 func DrawString(screen tcell.Screen, x, y int, s string) {
+    i := x
     for _, r := range s {
         if r == '\n' {
             y++
-            x = 0
+            i = x
             continue
         }
-        screen.SetContent(x, y, r, nil, tcell.StyleDefault)
-        x++
+        screen.SetContent(i, y, r, nil, tcell.StyleDefault)
+        i++
     }
 }
 
@@ -38,9 +39,5 @@ func DrawTable(screen tcell.Screen, x, y int, t table.Writer) {
 }
 
 func ImgToAscii(path string, x, y int) string {
-	mat, err := quickscii.PreProcess(path, x, y)
-	if err != nil {
-		return ""
-	}
-	return quickscii.Convert(mat)
+    return quickscii.Convert(path, x, y)
 }

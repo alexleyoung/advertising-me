@@ -17,9 +17,13 @@ func MainMenu(screen tcell.Screen) *Action {
 	selected := 0
 	playerName := ""
 	lastInput := tcell.KeyRune
+	art := game.ImgToAscii("/Users/alexyoung/desktop/headshot.png", 55, 35)
+	art2 := game.ImgToAscii("/Users/alexyoung/desktop/alexcolin.jpg", 80, 35)
 	for mainMenu {
 		screen.Clear()
 
+		game.DrawString(screen, 0, 0, art)
+		game.DrawString(screen, 90, 0, art2)
 		// draw menu UI
 		game.DrawString(screen, 60, 20, "Welcome to Advertising Alex!")
 		game.DrawString(screen, 67, 22, "Who is playing?")

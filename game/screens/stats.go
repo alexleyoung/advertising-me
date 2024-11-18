@@ -15,20 +15,21 @@ func Stats(screen tcell.Screen) {
 	for _, score := range scores {
 		t.AppendRow(table.Row{score.Player, score.Score, score.NearMisses, score.Timestamp})
 	}
-	stats := true
-	for stats {
-		screen.Clear()
 
-		game.DrawTable(screen, 0, 0, t)
-		
-		screen.Show()
+	screen.Clear()
+
+	game.DrawTable(screen, 0, 0, t)
+	
+	screen.Show()
+
+	for {
 
 		ev := screen.PollEvent()
 		switch ev := ev.(type) {
 		case *tcell.EventKey:
 			switch ev.Key() {
 			case tcell.KeyEscape:
-				stats = false
+				return
 			}
 		}	
 	}

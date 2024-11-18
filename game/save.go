@@ -211,3 +211,22 @@ func GetCoins(name string) int {
 
 	return count
 }
+
+func RemovePlayer(name string) {
+	db, err := sql.Open("sqlite3", "./game_data.db")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
+	stmt, err := db.Prepare("DELETE FROM players WHERE name = ?")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(name)
+	if err != nil {
+		log.Fatal(err)
+	}
+}

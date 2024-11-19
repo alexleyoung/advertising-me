@@ -57,16 +57,16 @@ func Shop(screen tcell.Screen, g *game.Game, coins int) {
 
 		// draw items
 		game.DrawString(screen, BACKGROUND_POINT.X-30, BACKGROUND_POINT.Y, "BACKGROUND (3 COINS) ->")
-		game.DrawString(screen, BACKGROUND_POINT.X, BACKGROUND_POINT.Y, "1")
+		game.DrawString(screen, BACKGROUND_POINT.X, BACKGROUND_POINT.Y, "👨‍👩‍👧")
 
 		game.DrawString(screen, CHILDHOOD_POINT.X-29, CHILDHOOD_POINT.Y, "CHILDHOOD (5 COINS) ->")
-		game.DrawString(screen, CHILDHOOD_POINT.X, CHILDHOOD_POINT.Y, "2")
+		game.DrawString(screen, CHILDHOOD_POINT.X, CHILDHOOD_POINT.Y, "🧸")
 
 		game.DrawString(screen, NOW_POINT.X+9, NOW_POINT.Y, "<- NOW (7 COINS)")
-		game.DrawString(screen, NOW_POINT.X, NOW_POINT.Y, "3")
+		game.DrawString(screen, NOW_POINT.X, NOW_POINT.Y, "😎")
 
 		game.DrawString(screen, FUTURE_POINT.X+9, FUTURE_POINT.Y, "<- FUTURE (10 COINS)") 
-		game.DrawString(screen, FUTURE_POINT.X, FUTURE_POINT.Y, "4")
+		game.DrawString(screen, FUTURE_POINT.X, FUTURE_POINT.Y, "🏙️")
 
 
 		screen.Show()
@@ -192,8 +192,29 @@ func Shop(screen tcell.Screen, g *game.Game, coins int) {
 			}
 		}
 		if g.Player.Sprite.X == FUTURE_POINT.X && g.Player.Sprite.Y == FUTURE_POINT.Y {
-	}
-
+			if coins >= 10 {
+				coins -= 10
+				game.AddCoins(g.Player.Name, -10)
+				
+				// Render item screen
+				g.Player.Sprite.X = 75
+				g.Player.Sprite.Y = 20
+				Slides(
+					screen, 
+					&Image{
+						Path: "assets/future/seattle.jpg",
+						Width: 100,
+						Height: 50,
+					},
+					&Image{
+						Path: "assets/future/gopher.png",
+						Width: 100,
+						Height: 50,
+					},
+				)
+			}
+		}
+			
 		// fps counter logic
 		frameCount++
 		if time.Since(lastFPSUpdate) >= time.Second {
@@ -201,7 +222,7 @@ func Shop(screen tcell.Screen, g *game.Game, coins int) {
 			frameCount = 0
 			lastFPSUpdate = time.Now()
 		}
-
+	
 		<-ticker.C
 	}
 }

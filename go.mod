@@ -3,7 +3,7 @@ module go-game
 go 1.23.2
 
 require (
-	github.com/alexleyoung/quickscii v0.4.1
+	github.com/alexleyoung/quickscii v0.4.2
 	github.com/gdamore/tcell/v2 v2.7.4
 	github.com/jedib0t/go-pretty/v6 v6.6.1
 	github.com/mattn/go-sqlite3 v1.14.24

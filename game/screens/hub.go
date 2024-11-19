@@ -15,7 +15,7 @@ func Hub(screen tcell.Screen, g *game.Game) *Action {
 	ticker := time.NewTicker(time.Second / 30)
 	defer ticker.Stop()
 
-	PLAY_PORTAL_X := 15
+	PLAY_PORTAL_X := 35
 	PLAY_PORTAL_Y := 25
 
 	SHOP_PORTAL_X := 70
@@ -31,19 +31,12 @@ func Hub(screen tcell.Screen, g *game.Game) *Action {
 		// draw player
 		g.Player.Sprite.Draw(screen)
 		// draw ui
-		game.DrawString(screen, 0, 0, "Coins: " + strconv.Itoa(coins))
+		game.DrawString(screen, 0, 0, "Coins 🪙: " + strconv.Itoa(coins))
 		game.DrawString(screen, 147, 0, strconv.Itoa(fps))
 		// draw game portal
-		screen.SetContent(PLAY_PORTAL_X, PLAY_PORTAL_Y, '%', nil, tcell.StyleDefault.Foreground(tcell.ColorPaleTurquoise))
-		screen.SetContent(PLAY_PORTAL_X, PLAY_PORTAL_Y+1, '%', nil, tcell.StyleDefault.Foreground(tcell.ColorPaleTurquoise))
-		screen.SetContent(PLAY_PORTAL_X-1, PLAY_PORTAL_Y, '|', nil, tcell.StyleDefault.Foreground(tcell.ColorPaleTurquoise))
-		screen.SetContent(PLAY_PORTAL_X-1, PLAY_PORTAL_Y+1, '|', nil, tcell.StyleDefault.Foreground(tcell.ColorPaleTurquoise))
-		screen.SetContent(PLAY_PORTAL_X-1, PLAY_PORTAL_Y+2, '|', nil, tcell.StyleDefault.Foreground(tcell.ColorPaleTurquoise))
-		screen.SetContent(PLAY_PORTAL_X+1, PLAY_PORTAL_Y, '|', nil, tcell.StyleDefault.Foreground(tcell.ColorPaleTurquoise))
-		screen.SetContent(PLAY_PORTAL_X+1, PLAY_PORTAL_Y+1, '|', nil, tcell.StyleDefault.Foreground(tcell.ColorPaleTurquoise))
-		screen.SetContent(PLAY_PORTAL_X+1, PLAY_PORTAL_Y+2, '|', nil, tcell.StyleDefault.Foreground(tcell.ColorPaleTurquoise))
+		screen.SetContent(PLAY_PORTAL_X, PLAY_PORTAL_Y, '🚪', nil, tcell.StyleDefault.Foreground(tcell.ColorPaleTurquoise))
 		// draw shop portal
-		screen.SetContent(SHOP_PORTAL_X, SHOP_PORTAL_Y, 'Q', nil, tcell.StyleDefault.Foreground(tcell.ColorFireBrick))
+		screen.SetContent(SHOP_PORTAL_X, SHOP_PORTAL_Y, '🏪', nil, tcell.StyleDefault.Foreground(tcell.ColorFireBrick))
 
 		screen.Show()
 

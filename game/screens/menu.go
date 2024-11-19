@@ -17,8 +17,8 @@ func MainMenu(screen tcell.Screen) *Action {
 	selected := 0
 	playerName := ""
 	lastInput := tcell.KeyRune
-	art := game.ImgToAscii("/Users/alexyoung/desktop/headshot.png", 55, 35)
-	art2 := game.ImgToAscii("/Users/alexyoung/desktop/alexcolin.jpg", 80, 35)
+	art := game.ImgToAscii("assets/headshot.png", 55, 35)
+	art2 := game.ImgToAscii("assets/now/alexcolin.jpg", 80, 35)
 	for mainMenu {
 		screen.Clear()
 

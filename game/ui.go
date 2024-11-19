@@ -1,7 +1,7 @@
 package game
 
 import (
-	"github.com/alexleyoung/quickscii/quickscii"
+	"github.com/alexleyoung/quickscii"
 	"github.com/gdamore/tcell/v2"
 	"github.com/jedib0t/go-pretty/v6/table"
 )

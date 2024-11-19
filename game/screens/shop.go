@@ -113,12 +113,12 @@ func Shop(screen tcell.Screen, g *game.Game, coins int) {
 				Slides(
 					screen, 
 					&Image{
-						Path: "assets/sister.JPG",
+						Path: "assets/background/sister.JPG",
 						Width: 100,
 						Height: 50,
 					},
 					&Image{
-						Path: "assets/boat.JPG",
+						Path: "assets/background/boat.JPG",
 						Width: 150,
 						Height: 50,
 					},
@@ -136,17 +136,22 @@ func Shop(screen tcell.Screen, g *game.Game, coins int) {
 				Slides(
 					screen, 
 					&Image{
-						Path: "assets/nerd.jpg",
+						Path: "assets/childhood/nerd.jpg",
 						Width: 100,
 						Height: 50,
 					},
 					&Image{
-						Path: "assets/steam.png",
-						Width: 150,
-						Height: 50,
+						Path: "assets/childhood/catnerd.jpg",
+						Width: 80,
+						Height: 45,
 					},
 					&Image{
-						Path: "assets/band.JPG",
+						Path: "assets/childhood/steam.png",
+						Width: 80,
+						Height: 27,
+					},
+					&Image{
+						Path: "assets/childhood/band.JPG",
 						Width: 70,
 						Height: 50,
 					},
@@ -154,6 +159,37 @@ func Shop(screen tcell.Screen, g *game.Game, coins int) {
 			}
 		}
 		if g.Player.Sprite.X == NOW_POINT.X && g.Player.Sprite.Y == NOW_POINT.Y {
+			if coins >= 7 {
+				coins -= 7
+				game.AddCoins(g.Player.Name, -7)
+				
+				// Render item screen
+				g.Player.Sprite.X = 75
+				g.Player.Sprite.Y = 20
+				Slides(
+					screen, 
+					&Image{
+						Path: "assets/now/sledset.jpg",
+						Width: 100,
+						Height: 50,
+					},
+					&Image{
+						Path: "assets/now/nyc.JPG",
+						Width: 90,
+						Height: 49,
+					},
+					&Image{
+						Path: "assets/now/comedy.JPG",
+						Width: 150,
+						Height: 50,
+					},
+					&Image{
+						Path: "assets/now/cave.JPG",
+						Width: 100,
+						Height: 49,
+					},
+				)
+			}
 		}
 		if g.Player.Sprite.X == FUTURE_POINT.X && g.Player.Sprite.Y == FUTURE_POINT.Y {
 	}

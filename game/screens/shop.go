@@ -57,7 +57,7 @@ func Shop(screen tcell.Screen, g *game.Game, coins int) {
 
 		// draw items
 		game.DrawString(screen, BACKGROUND_POINT.X-30, BACKGROUND_POINT.Y, "BACKGROUND (3 COINS) ->")
-		game.DrawString(screen, BACKGROUND_POINT.X, BACKGROUND_POINT.Y, "👨‍👩‍👧")
+		game.DrawString(screen, BACKGROUND_POINT.X, BACKGROUND_POINT.Y, "🌳")
 
 		game.DrawString(screen, CHILDHOOD_POINT.X-29, CHILDHOOD_POINT.Y, "CHILDHOOD (5 COINS) ->")
 		game.DrawString(screen, CHILDHOOD_POINT.X, CHILDHOOD_POINT.Y, "🧸")
@@ -208,6 +208,11 @@ func Shop(screen tcell.Screen, g *game.Game, coins int) {
 					},
 					&Image{
 						Path: "assets/future/gopher.png",
+						Width: 100,
+						Height: 50,
+					},
+					&Image{
+						Path: "assets/future/dart.png",
 						Width: 100,
 						Height: 50,
 					},

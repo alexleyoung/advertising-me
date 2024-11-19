@@ -34,7 +34,7 @@ func main() {
 
 	InitLogs()
 	game.InitSaves()
-	
+
 	running := true
 	for running {
 		action := screens.MainMenu(screen)

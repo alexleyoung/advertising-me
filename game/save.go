@@ -10,12 +10,12 @@ import (
 
 func InitSaves() {
 	db, err := sql.Open("sqlite3", "./game_data.db")
-    if err != nil {
-        log.Fatal(err)
-    }
-    defer db.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
 
-    createTableSQL := `
+	createTableSQL := `
 	CREATE TABLE IF NOT EXISTS players (
         name TEXT PRIMARY KEY
     );
@@ -42,15 +42,15 @@ func InitSaves() {
 		name TEXT PRIMARY KEY
 	);
 	`
-    
-    _, err = db.Exec(createTableSQL)
-    if err != nil {
-        log.Fatal(err)
-    }
+
+	_, err = db.Exec(createTableSQL)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func CreatePlayer(name string) {
-	AddItem(name, "coin", 0)	
+	AddItem(name, "coin", 0)
 	AddItem(name, "background", 0)
 	AddItem(name, "childhood", 0)
 	AddItem(name, "now", 0)
@@ -132,11 +132,11 @@ func SavePlayerData(name string, score int, nearMisses int, timestamp int64) {
 }
 
 type Score struct {
-	id int
-	Player string
-	Score int
+	id         int
+	Player     string
+	Score      int
 	NearMisses int
-	Timestamp int
+	Timestamp  int
 }
 
 func GetHighScores() []*Score {
@@ -182,7 +182,7 @@ func AddItem(player, item string, count int) {
 	VALUES (?, ?, ?) 
 	ON CONFLICT (player, item) 
 	DO UPDATE SET count = inventory.count + excluded.count
-	`) 
+	`)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -247,7 +247,7 @@ func PurchaseItem(player, item string, count int) {
 	VALUES (?, ?, ?) 
 	ON CONFLICT (player, item) 
 	DO UPDATE SET count = inventory.count + excluded.count
-	`) 
+	`)
 	if err != nil {
 		log.Fatal(err)
 	}

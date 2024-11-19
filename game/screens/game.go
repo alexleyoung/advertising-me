@@ -18,8 +18,8 @@ func Game(screen tcell.Screen, g *game.Game) {
 	frameCount := 0
 	lastFPSUpdate := time.Now()
 	ticker := time.NewTicker(time.Second / 30)
-	defer ticker.Stop()	
-	
+	defer ticker.Stop()
+
 	for {
 		if g.Alive {
 			// Player movement
@@ -34,29 +34,29 @@ func Game(screen tcell.Screen, g *game.Game) {
 					}
 					switch ev.Rune() {
 					case 'k', 'w':
-						if g.Player.Sprite.Y > game.TOP_BORDER_Y + 1 {
+						if g.Player.Sprite.Y > game.TOP_BORDER_Y+1 {
 							g.Player.Sprite.Y--
 						}
 						playerMoved = true
 					case 'j', 's':
-						if g.Player.Sprite.Y < game.TOP_BORDER_Y + game.MAP_HEIGHT - 1 {
+						if g.Player.Sprite.Y < game.TOP_BORDER_Y+game.MAP_HEIGHT-1 {
 							g.Player.Sprite.Y++
 						}
 						playerMoved = true
 					case 'h', 'a':
-						if g.Player.Sprite.X > game.LEFT_BORDER_X + 1 {
+						if g.Player.Sprite.X > game.LEFT_BORDER_X+1 {
 							g.Player.Sprite.X--
 						}
 						playerMoved = true
 					case 'l', 'd':
-						if g.Player.Sprite.X < game.LEFT_BORDER_X + game.MAP_WIDTH - 1 {
+						if g.Player.Sprite.X < game.LEFT_BORDER_X+game.MAP_WIDTH-1 {
 							g.Player.Sprite.X++
 						}
 						playerMoved = true
 					}
 				}
 			}
-	
+
 			// coin collision check
 			if playerMoved {
 				for i, coin := range g.Coins {
@@ -76,12 +76,12 @@ func Game(screen tcell.Screen, g *game.Game) {
 					}
 				}
 			}
-			
+
 			// projectile collision check
 			for i := len(g.Projectiles) - 1; i >= 0; i-- {
 				projectile := g.Projectiles[i]
 				projectile.Update()
-	
+
 				// respawn out of bounds projectiles
 				if projectile.Sprite.X < -5 || projectile.Sprite.X > 150 || projectile.Sprite.Y < -5 || projectile.Sprite.Y > 50 {
 					g.Projectiles[i] = game.GenerateProjectile(projectileColor)
@@ -89,19 +89,19 @@ func Game(screen tcell.Screen, g *game.Game) {
 				if projectile.Sprite.Y == g.Player.Sprite.Y && projectile.Sprite.X == g.Player.Sprite.X {
 					g.Alive = false
 				}
-	
+
 				// chcek for near miss
-				if math.Abs(float64(projectile.Sprite.X - g.Player.Sprite.X)) == 1 && math.Abs(float64(projectile.Sprite.Y - g.Player.Sprite.Y)) == 1 {
+				if math.Abs(float64(projectile.Sprite.X-g.Player.Sprite.X)) == 1 && math.Abs(float64(projectile.Sprite.Y-g.Player.Sprite.Y)) == 1 {
 					g.Player.Score++
 					g.Player.NearMisses++
 				}
 			}
-	
+
 			// draw logic
 			screen.Clear()
 
 			game.DrawRect(screen, game.LEFT_BORDER_X, game.TOP_BORDER_Y, game.MAP_WIDTH, game.MAP_HEIGHT, tcell.StyleDefault)
-	
+
 			g.Player.Sprite.Draw(screen)
 			for _, coin := range g.Coins {
 				coin.Draw(screen)
@@ -116,7 +116,7 @@ func Game(screen tcell.Screen, g *game.Game) {
 			game.DrawString(screen, 147, 0, fmt.Sprintf("FPS: %d", fps))
 
 			screen.Show()
-	
+
 			// fps counter logic
 			frameCount++
 			if time.Since(lastFPSUpdate) >= time.Second {
@@ -124,7 +124,7 @@ func Game(screen tcell.Screen, g *game.Game) {
 				frameCount = 0
 				lastFPSUpdate = time.Now()
 			}
-			
+
 			<-ticker.C
 		} else {
 			// player death logic

@@ -34,20 +34,20 @@ func MainMenu(screen tcell.Screen) *Action {
 				game.DrawString(screen, 69, 24+i, player)
 			}
 		}
-		game.DrawString(screen, 57, 24 + len(players), "new player: ")
+		game.DrawString(screen, 57, 24+len(players), "new player: ")
 		if selected == len(players) {
 			if len(playerName) == 0 {
-				game.DrawColorString(screen, 69, 24 + len(players), "_", tcell.StyleDefault.Foreground(tcell.ColorOrangeRed))
+				game.DrawColorString(screen, 69, 24+len(players), "_", tcell.StyleDefault.Foreground(tcell.ColorOrangeRed))
 			} else {
-				game.DrawColorString(screen, 69, 24 + len(players), playerName, tcell.StyleDefault.Foreground(tcell.ColorOrangeRed))
+				game.DrawColorString(screen, 69, 24+len(players), playerName, tcell.StyleDefault.Foreground(tcell.ColorOrangeRed))
 			}
 		}
 		if lastInput == 127 && selected != len(players) {
-			game.DrawColorString(screen, 55, 30, "Press delete again to remove selected player", tcell.StyleDefault.Foreground(tcell.ColorRed)) 
+			game.DrawColorString(screen, 55, 30, "Press delete again to remove selected player", tcell.StyleDefault.Foreground(tcell.ColorRed))
 		}
-		
+
 		screen.Show()
-		
+
 		// handle inputs
 		ev := screen.PollEvent()
 		switch ev := ev.(type) {
@@ -107,18 +107,18 @@ func MainMenu(screen tcell.Screen) *Action {
 						Type: "PLAY",
 						Data: players[selected],
 					}
-					} else {
-						if len(playerName) > 0 {
-							game.CreatePlayer(playerName)
-							mainMenu = false
-							return &Action{
-								Type: "PLAY",
-								Data: playerName,
-							}
+				} else {
+					if len(playerName) > 0 {
+						game.CreatePlayer(playerName)
+						mainMenu = false
+						return &Action{
+							Type: "PLAY",
+							Data: playerName,
 						}
 					}
 				}
-				}	
+			}
+		}
 	}
 	return &Action{
 		Type: "EXIT",

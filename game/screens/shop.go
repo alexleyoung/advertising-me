@@ -9,8 +9,8 @@ import (
 )
 
 type Image struct {
-	Path string
-	Width int
+	Path   string
+	Width  int
 	Height int
 }
 
@@ -24,20 +24,26 @@ type ShopItem struct {
 	Slides   []*Image
 }
 
-func handleItemPurchase(screen tcell.Screen, g *game.Game, items *map[string]struct{}, item ShopItem, coins *int) {
+func handleItemPurchase(
+	screen tcell.Screen,
+	g *game.Game,
+	items *map[string]struct{},
+	item ShopItem,
+	coins *int,
+) {
 	if _, exists := (*items)[item.Name]; exists {
 		g.Player.Sprite.X = 75
 		g.Player.Sprite.Y = 20
 		Slides(screen, item.Slides)
 		return
 	}
-	
+
 	if *coins >= item.Cost {
 		*coins -= item.Cost
 		game.AddItem(g.Player.Name, "coin", -item.Cost)
 		game.PurchaseItem(g.Player.Name, item.Name, 1)
 		(*items)[item.Name] = struct{}{}
-		
+
 		g.Player.Sprite.X = 75
 		g.Player.Sprite.Y = 20
 		Slides(screen, item.Slides)
@@ -142,12 +148,12 @@ func Shop(screen tcell.Screen, g *game.Game, coins int) {
 		},
 	}
 
-	for {	
+	for {
 		// draw logic
 		screen.Clear()
 
 		// draw ui
-		game.DrawString(screen, 0, 0, "Coins: " + strconv.Itoa(coins))
+		game.DrawString(screen, 0, 0, "Coins: "+strconv.Itoa(coins))
 		game.DrawString(screen, 147, 0, strconv.Itoa(fps))
 
 		g.Player.Sprite.Draw(screen)
@@ -159,7 +165,7 @@ func Shop(screen tcell.Screen, g *game.Game, coins int) {
 		// draw items
 		for _, item := range shopItems {
 			if _, exists := owned[item.Name]; exists {
-				game.DrawString(screen, item.LabelX, item.Position.Y, item.Name + " (OWNED)")
+				game.DrawString(screen, item.LabelX, item.Position.Y, item.Name+" (OWNED)")
 			} else {
 				game.DrawString(screen, item.LabelX, item.Position.Y, item.Label)
 			}
@@ -175,28 +181,28 @@ func Shop(screen tcell.Screen, g *game.Game, coins int) {
 			case *tcell.EventKey:
 				switch ev.Key() {
 				case tcell.KeyEscape:
-					return 
+					return
 				}
 				switch ev.Rune() {
 				case 'k', 'w':
-					if g.Player.Sprite.Y > TOP_BORDER_Y + 1{
+					if g.Player.Sprite.Y > TOP_BORDER_Y+1 {
 						g.Player.Sprite.Y--
 					}
 				case 'j', 's':
-					if g.Player.Sprite.Y < TOP_BORDER_Y + MAP_HEIGHT - 1 {
+					if g.Player.Sprite.Y < TOP_BORDER_Y+MAP_HEIGHT-1 {
 						g.Player.Sprite.Y++
 					}
 				case 'h', 'a':
-					if g.Player.Sprite.X > LEFT_BORDER_X + 1 {
+					if g.Player.Sprite.X > LEFT_BORDER_X+1 {
 						g.Player.Sprite.X--
 					}
 				case 'l', 'd':
-					if g.Player.Sprite.X < LEFT_BORDER_X + MAP_WIDTH - 1 {
+					if g.Player.Sprite.X < LEFT_BORDER_X+MAP_WIDTH-1 {
 						g.Player.Sprite.X++
 					}
 				}
 			}
-		}	
+		}
 
 		// check collisions with items
 		for _, item := range shopItems {
@@ -204,7 +210,7 @@ func Shop(screen tcell.Screen, g *game.Game, coins int) {
 				handleItemPurchase(screen, g, &owned, item, &coins)
 			}
 		}
-			
+
 		// fps counter logic
 		frameCount++
 		if time.Since(lastFPSUpdate) >= time.Second {
@@ -212,9 +218,8 @@ func Shop(screen tcell.Screen, g *game.Game, coins int) {
 			frameCount = 0
 			lastFPSUpdate = time.Now()
 		}
-	
+
 		<-ticker.C
 	}
-
 
 }

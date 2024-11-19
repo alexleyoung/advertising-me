@@ -6,7 +6,7 @@ import (
 	"github.com/gdamore/tcell/v2"
 )
 
-func Slides(screen tcell.Screen, imgs []*Image) {	
+func Slides(screen tcell.Screen, imgs []*Image) {
 	for _, img := range imgs {
 		// first picture
 		screen.Clear()
@@ -18,7 +18,7 @@ func Slides(screen tcell.Screen, imgs []*Image) {
 		}
 		img := game.ImgToAscii(img.Path, img.Width, img.Height)
 		game.DrawString(screen, 0, 0, img)
-		screen.Show()	
+		screen.Show()
 		run := true
 		for run {
 			ev := screen.PollEvent()

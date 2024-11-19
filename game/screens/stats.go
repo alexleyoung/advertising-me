@@ -19,7 +19,7 @@ func Stats(screen tcell.Screen) {
 	screen.Clear()
 
 	game.DrawTable(screen, 0, 0, t)
-	
+
 	screen.Show()
 
 	for {
@@ -31,6 +31,6 @@ func Stats(screen tcell.Screen) {
 			case tcell.KeyEscape:
 				return
 			}
-		}	
+		}
 	}
 }

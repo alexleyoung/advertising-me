@@ -31,7 +31,7 @@ func Hub(screen tcell.Screen, g *game.Game) *Action {
 		// draw player
 		g.Player.Sprite.Draw(screen)
 		// draw ui
-		game.DrawString(screen, 0, 0, "Coins 🪙: " + strconv.Itoa(coins))
+		game.DrawString(screen, 0, 0, "Coins 🪙: "+strconv.Itoa(coins))
 		game.DrawString(screen, 147, 0, strconv.Itoa(fps))
 		// draw game portal
 		screen.SetContent(PLAY_PORTAL_X, PLAY_PORTAL_Y, '🚪', nil, tcell.StyleDefault.Foreground(tcell.ColorPaleTurquoise))
@@ -40,7 +40,7 @@ func Hub(screen tcell.Screen, g *game.Game) *Action {
 
 		screen.Show()
 
-		// update logic	
+		// update logic
 		if screen.HasPendingEvent() {
 			ev := screen.PollEvent()
 			switch ev := ev.(type) {
@@ -71,7 +71,7 @@ func Hub(screen tcell.Screen, g *game.Game) *Action {
 					}
 				}
 			}
-		}	
+		}
 
 		// check collisions with portals
 		if g.Player.Sprite.X == PLAY_PORTAL_X && g.Player.Sprite.Y == PLAY_PORTAL_Y {
@@ -86,10 +86,10 @@ func Hub(screen tcell.Screen, g *game.Game) *Action {
 			g.Player.Sprite.Y = 25
 			Shop(screen, g, coins)
 			g.Player.Sprite.X = SHOP_PORTAL_X
-			g.Player.Sprite.Y = SHOP_PORTAL_Y+ 1
+			g.Player.Sprite.Y = SHOP_PORTAL_Y + 1
 			coins = game.GetCoins(g.Player.Name)
 		}
-		
+
 		// fps counter logic
 		frameCount++
 		if time.Since(lastFPSUpdate) >= time.Second {

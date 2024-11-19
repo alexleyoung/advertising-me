@@ -49,6 +49,10 @@ func DrawTable(screen tcell.Screen, x, y int, t table.Writer) {
 	DrawString(screen, x, y, content)
 }
 
-func ImgToAscii(path string, x, y int) string {
-	return quickscii.Convert(path, x, y)
+func ImgToAscii(path string, x, y int, charset string) (string, error) {
+	img, err := quickscii.Convert(path, x, y, charset)
+	if err != nil {
+		return "", err
+	}
+	return img, nil
 }

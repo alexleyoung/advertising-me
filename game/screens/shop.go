@@ -9,9 +9,10 @@ import (
 )
 
 type Image struct {
-	Path   string
-	Width  int
-	Height int
+	Path    string
+	Width   int
+	Height  int
+	Charset string
 }
 
 type ShopItem struct {
@@ -78,8 +79,8 @@ func Shop(screen tcell.Screen, g *game.Game, coins int) {
 			LabelX:   game.Point{X: LEFT_BORDER_X + X_OFFSET, Y: TOP_BORDER_Y + Y_OFFSET}.X - 30,
 			Label:    "BACKGROUND (3 COINS) ->",
 			Slides: []*Image{
-				{Path: "assets/background/sister.JPG", Width: 100, Height: 50},
-				{Path: "assets/background/boat.JPG", Width: 150, Height: 50},
+				{Path: "assets/background/sister.JPG", Width: 100, Height: 50, Charset: "text"},
+				{Path: "assets/background/boat.JPG", Width: 150, Height: 50, Charset: "block"},
 			},
 		},
 		{
@@ -90,10 +91,10 @@ func Shop(screen tcell.Screen, g *game.Game, coins int) {
 			LabelX:   game.Point{X: LEFT_BORDER_X + X_OFFSET, Y: TOP_BORDER_Y + MAP_HEIGHT - Y_OFFSET}.X - 29,
 			Label:    "CHILDHOOD (5 COINS) ->",
 			Slides: []*Image{
-				{Path: "assets/childhood/nerd.jpg", Width: 100, Height: 50},
-				{Path: "assets/childhood/catnerd.jpg", Width: 80, Height: 45},
-				{Path: "assets/childhood/steam.png", Width: 80, Height: 27},
-				{Path: "assets/childhood/band.JPG", Width: 70, Height: 50},
+				{Path: "assets/childhood/nerd.jpg", Width: 100, Height: 50, Charset: "block"},
+				{Path: "assets/childhood/catnerd.jpg", Width: 80, Height: 45, Charset: "text"},
+				{Path: "assets/childhood/steam.png", Width: 80, Height: 27, Charset: "block"},
+				{Path: "assets/childhood/band.JPG", Width: 70, Height: 50, Charset: "text"},
 			},
 		},
 		{
@@ -104,13 +105,13 @@ func Shop(screen tcell.Screen, g *game.Game, coins int) {
 			LabelX:   game.Point{X: LEFT_BORDER_X + MAP_WIDTH - X_OFFSET, Y: TOP_BORDER_Y + Y_OFFSET}.X + 9,
 			Label:    "<- NOW (7 COINS)",
 			Slides: []*Image{
-				{Path: "assets/now/sledset.jpg", Width: 100, Height: 50},
-				{Path: "assets/now/nyc.JPG", Width: 90, Height: 49},
-				{Path: "assets/now/comedy.JPG", Width: 150, Height: 50},
-				{Path: "assets/now/cave.JPG", Width: 100, Height: 49},
-				{Path: "assets/now/alexcolin.jpg", Width: 160, Height: 49},
-				{Path: "assets/now/g2halloween.JPG", Width: 160, Height: 49},
-				{Path: "assets/now/linkedin.JPG", Width: 160, Height: 49},
+				{Path: "assets/now/sledset.jpg", Width: 100, Height: 50, Charset: "text"},
+				{Path: "assets/now/nyc.JPG", Width: 90, Height: 49, Charset: "text"},
+				{Path: "assets/now/comedy.JPG", Width: 150, Height: 50, Charset: "text"},
+				{Path: "assets/now/cave.JPG", Width: 100, Height: 49, Charset: "block"},
+				{Path: "assets/now/alexcolin.jpg", Width: 160, Height: 49, Charset: "block"},
+				{Path: "assets/now/g2halloween.JPG", Width: 160, Height: 49, Charset: "text"},
+				{Path: "assets/now/linkedin.JPG", Width: 160, Height: 49, Charset: "text"},
 			},
 		},
 		{
@@ -121,9 +122,9 @@ func Shop(screen tcell.Screen, g *game.Game, coins int) {
 			LabelX:   game.Point{X: LEFT_BORDER_X + MAP_WIDTH - X_OFFSET, Y: TOP_BORDER_Y + MAP_HEIGHT - Y_OFFSET}.X + 9,
 			Label:    "<- FUTURE (10 COINS)",
 			Slides: []*Image{
-				{Path: "assets/future/seattle.jpg", Width: 100, Height: 50},
-				{Path: "assets/future/gopher.png", Width: 100, Height: 50},
-				{Path: "assets/future/dart.png", Width: 100, Height: 50},
+				{Path: "assets/future/seattle.jpg", Width: 150, Height: 50, Charset: "block"},
+				{Path: "assets/future/gopher.png", Width: 100, Height: 50, Charset: "block"},
+				{Path: "assets/future/dart.png", Width: 100, Height: 50, Charset: "block"},
 			},
 		},
 	}

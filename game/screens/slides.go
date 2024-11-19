@@ -13,14 +13,25 @@ func Slides(screen tcell.Screen, imgs []*Image) {
 
 		// scuffed logic for loading pictures side by side
 		if img.Path == "assets/childhood/steam.png" {
-			game.DrawString(screen, 81, 10, game.ImgToAscii("assets/childhood/league.png", 80, 40))
+			side, err := game.ImgToAscii("assets/childhood/league.png", 80, 40, img.Charset)
+			if err != nil {
+				panic(err)
+			}
+			game.DrawString(screen, 81, 10, side)
 		}
 		if img.Path == "assets/childhood/band.JPG" {
-			game.DrawString(screen, 81, 0, game.ImgToAscii("assets/childhood/eigth.JPG", 80, 50))
+			side, err := game.ImgToAscii("assets/childhood/eigth.JPG", 80, 50, img.Charset)
+			if err != nil {
+				panic(err)
+			}
+			game.DrawString(screen, 81, 0, side)
 		}
 
 		// draw ascii picture
-		img := game.ImgToAscii(img.Path, img.Width, img.Height)
+		img, err := game.ImgToAscii(img.Path, img.Width, img.Height, img.Charset)
+		if err != nil {
+			panic(err)
+		}
 		game.DrawString(screen, 0, 0, img)
 		screen.Show()
 		run := true

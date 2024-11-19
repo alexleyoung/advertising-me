@@ -1,5 +1,7 @@
 github.com/alexleyoung/quickscii v0.4.2 h1:HAHfZ3ZfvmZrRb8OTvq8wWWGC3IXwJKZUBTglVV31HY=
 github.com/alexleyoung/quickscii v0.4.2/go.mod h1:PdLMYspOJHs6UbUADI8IR+EIxlPUBL6wkVmQl/E9vyE=
+github.com/alexleyoung/quickscii v0.5.0 h1:/RsRieqkrZmvkJgNXOB0Nh93mY8N8RoUXWt+LVEPlwQ=
+github.com/alexleyoung/quickscii v0.5.0/go.mod h1:PdLMYspOJHs6UbUADI8IR+EIxlPUBL6wkVmQl/E9vyE=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/gdamore/encoding v1.0.0/go.mod h1:alR0ol34c49FCSBLjhosxzcPHQbf2trDkoo5dl+VrEg=

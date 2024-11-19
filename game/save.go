@@ -50,7 +50,7 @@ func InitSaves() {
 }
 
 func CreatePlayer(name string) {
-	AddItem(name, "coins", 0)	
+	AddItem(name, "coin", 0)	
 	AddItem(name, "background", 0)
 	AddItem(name, "childhood", 0)
 	AddItem(name, "now", 0)
@@ -201,7 +201,7 @@ func GetCoins(name string) int {
 	}
 	defer db.Close()
 
-	stmt, err := db.Prepare("SELECT count FROM inventory WHERE player = ? AND item = 'coins'")
+	stmt, err := db.Prepare("SELECT count FROM inventory WHERE player = ? AND item = 'coin'")
 	if err != nil {
 		log.Fatal(err)
 	}

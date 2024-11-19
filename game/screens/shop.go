@@ -118,7 +118,7 @@ func Shop(screen tcell.Screen, g *game.Game, coins int) {
 
 		// check collisions with items
 		if g.Player.Sprite.X == BACKGROUND_POINT.X && g.Player.Sprite.Y == BACKGROUND_POINT.Y {
-			if ITEMS["background"] == struct{}{} {
+			if  _, exists := ITEMS["background"]; exists{
 				g.Player.Sprite.X = 75
 				g.Player.Sprite.Y = 20
 				Slides(
@@ -158,7 +158,7 @@ func Shop(screen tcell.Screen, g *game.Game, coins int) {
 			}
 		}
 		if g.Player.Sprite.X == CHILDHOOD_POINT.X && g.Player.Sprite.Y == CHILDHOOD_POINT.Y {
-			if ITEMS["childhood"] == struct{}{} {
+			if  _, exists := ITEMS["childhood"]; exists{
 				g.Player.Sprite.X = 75
 				g.Player.Sprite.Y = 20
 				Slides(
@@ -218,7 +218,7 @@ func Shop(screen tcell.Screen, g *game.Game, coins int) {
 			}
 		}
 		if g.Player.Sprite.X == NOW_POINT.X && g.Player.Sprite.Y == NOW_POINT.Y {
-			if ITEMS["now"] == struct{}{} {
+			if  _, exists := ITEMS["now"]; exists{
 				g.Player.Sprite.X = 75
 				g.Player.Sprite.Y = 20
 				Slides(
@@ -288,7 +288,7 @@ func Shop(screen tcell.Screen, g *game.Game, coins int) {
 			}
 		}
 		if g.Player.Sprite.X == FUTURE_POINT.X && g.Player.Sprite.Y == FUTURE_POINT.Y {
-			if ITEMS["future"] == struct{}{} {
+			if  _, exists := ITEMS["future"]; exists{
 				g.Player.Sprite.X = 75
 				g.Player.Sprite.Y = 20
 				Slides(

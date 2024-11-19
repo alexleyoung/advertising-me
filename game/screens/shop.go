@@ -14,6 +14,35 @@ type Image struct {
 	Height int
 }
 
+type ShopItem struct {
+	Name     string
+	Cost     int
+	Symbol   string
+	Position game.Point
+	LabelX   int
+	Label    string
+	Slides   []*Image
+}
+
+func handleItemPurchase(screen tcell.Screen, g *game.Game, items map[string]struct{}, item ShopItem, coins int) {
+	if _, exists := items[item.Name]; exists {
+		g.Player.Sprite.X = 75
+		g.Player.Sprite.Y = 20
+		Slides(screen, item.Slides)
+		return
+	}
+	
+	if coins >= item.Cost {
+		coins -= item.Cost
+		game.AddItem(g.Player.Name, "coin", -item.Cost)
+		game.PurchaseItem(g.Player.Name, item.Name, 1)
+		
+		g.Player.Sprite.X = 75
+		g.Player.Sprite.Y = 20
+		Slides(screen, item.Slides)
+	}
+}
+
 func Shop(screen tcell.Screen, g *game.Game, coins int) {
 	fps := 0
 	frameCount := 0
@@ -56,6 +85,62 @@ func Shop(screen tcell.Screen, g *game.Game, coins int) {
 		ITEMS["future"] = struct{}{}
 	}
 
+	shopItems := []ShopItem{
+		{
+			Name:     "background",
+			Cost:     3,
+			Symbol:   "🌳",
+			Position: BACKGROUND_POINT,
+			LabelX:   BACKGROUND_POINT.X - 30,
+			Label:    "BACKGROUND (3 COINS) ->",
+			Slides: []*Image{
+				{Path: "assets/background/sister.JPG", Width: 100, Height: 50},
+				{Path: "assets/background/boat.JPG", Width: 150, Height: 50},
+			},
+		},
+		{
+			Name:     "childhood",
+			Cost:     5,
+			Symbol:   "🧸",
+			Position: CHILDHOOD_POINT,
+			LabelX:   CHILDHOOD_POINT.X - 29,
+			Label:    "CHILDHOOD (5 COINS) ->",
+			Slides: []*Image{
+				{Path: "assets/childhood/nerd.jpg", Width: 100, Height: 50},
+				{Path: "assets/childhood/catnerd.jpg", Width: 80, Height: 45},
+				{Path: "assets/childhood/steam.png", Width: 80, Height: 27},
+				{Path: "assets/childhood/band.JPG", Width: 70, Height: 50},
+			},
+		},
+		{
+			Name:     "now",
+			Cost:     7,
+			Symbol:   "😎",
+			Position: NOW_POINT,
+			LabelX:   NOW_POINT.X + 9,
+			Label:    "<- NOW (7 COINS)",
+			Slides: []*Image{
+				{Path: "assets/now/sledset.jpg", Width: 100, Height: 50},
+				{Path: "assets/now/nyc.JPG", Width: 90, Height: 49},
+				{Path: "assets/now/comedy.JPG", Width: 150, Height: 50},
+				{Path: "assets/now/cave.JPG", Width: 100, Height: 49},
+			},
+		},
+		{
+			Name:     "future",
+			Cost:     10,
+			Symbol:   "🏙️",
+			Position: FUTURE_POINT,
+			LabelX:   FUTURE_POINT.X + 9,
+			Label:    "<- FUTURE (10 COINS)",
+			Slides: []*Image{
+				{Path: "assets/future/seattle.jpg", Width: 100, Height: 50},
+				{Path: "assets/future/gopher.png", Width: 100, Height: 50},
+				{Path: "assets/future/dart.png", Width: 100, Height: 50},
+			},
+		},
+	}
+
 	for {	
 		// draw logic
 		screen.Clear()
@@ -71,18 +156,10 @@ func Shop(screen tcell.Screen, g *game.Game, coins int) {
 		game.DrawRect(screen, LEFT_BORDER_X, TOP_BORDER_Y, MAP_WIDTH, MAP_HEIGHT, tcell.StyleDefault)
 
 		// draw items
-		game.DrawString(screen, BACKGROUND_POINT.X-30, BACKGROUND_POINT.Y, "BACKGROUND (3 COINS) ->")
-		game.DrawString(screen, BACKGROUND_POINT.X, BACKGROUND_POINT.Y, "🌳")
-
-		game.DrawString(screen, CHILDHOOD_POINT.X-29, CHILDHOOD_POINT.Y, "CHILDHOOD (5 COINS) ->")
-		game.DrawString(screen, CHILDHOOD_POINT.X, CHILDHOOD_POINT.Y, "🧸")
-
-		game.DrawString(screen, NOW_POINT.X+9, NOW_POINT.Y, "<- NOW (7 COINS)")
-		game.DrawString(screen, NOW_POINT.X, NOW_POINT.Y, "😎")
-
-		game.DrawString(screen, FUTURE_POINT.X+9, FUTURE_POINT.Y, "<- FUTURE (10 COINS)") 
-		game.DrawString(screen, FUTURE_POINT.X, FUTURE_POINT.Y, "🏙️")
-
+		for _, item := range shopItems {
+			game.DrawString(screen, item.LabelX, item.Position.Y, item.Label)
+			game.DrawString(screen, item.Position.X, item.Position.Y, item.Symbol)
+		}
 
 		screen.Show()
 
@@ -117,224 +194,9 @@ func Shop(screen tcell.Screen, g *game.Game, coins int) {
 		}	
 
 		// check collisions with items
-		if g.Player.Sprite.X == BACKGROUND_POINT.X && g.Player.Sprite.Y == BACKGROUND_POINT.Y {
-			if  _, exists := ITEMS["background"]; exists{
-				g.Player.Sprite.X = 75
-				g.Player.Sprite.Y = 20
-				Slides(
-					screen, 
-					&Image{
-						Path: "assets/background/sister.JPG",
-						Width: 100,
-						Height: 50,
-					},
-					&Image{
-						Path: "assets/background/boat.JPG",
-						Width: 150,
-						Height: 50,
-					},
-				)	
-			} else if coins >= 3 {
-				coins -= 3
-				game.AddItem(g.Player.Name, "coin", -3)
-				game.PurchaseItem(g.Player.Name, "background", 1)
-				
-				// Render item screen
-				g.Player.Sprite.X = 75
-				g.Player.Sprite.Y = 20
-				Slides(
-					screen, 
-					&Image{
-						Path: "assets/background/sister.JPG",
-						Width: 100,
-						Height: 50,
-					},
-					&Image{
-						Path: "assets/background/boat.JPG",
-						Width: 150,
-						Height: 50,
-					},
-				)
-			}
-		}
-		if g.Player.Sprite.X == CHILDHOOD_POINT.X && g.Player.Sprite.Y == CHILDHOOD_POINT.Y {
-			if  _, exists := ITEMS["childhood"]; exists{
-				g.Player.Sprite.X = 75
-				g.Player.Sprite.Y = 20
-				Slides(
-					screen, 
-					&Image{
-						Path: "assets/childhood/nerd.jpg",
-						Width: 100,
-						Height: 50,
-					},
-					&Image{
-						Path: "assets/childhood/catnerd.jpg",
-						Width: 80,
-						Height: 45,
-					},
-					&Image{
-						Path: "assets/childhood/steam.png",
-						Width: 80,
-						Height: 27,
-					},
-					&Image{
-						Path: "assets/childhood/band.JPG",
-						Width: 70,
-						Height: 50,
-					},
-				)	
-			} else if coins >= 5 {
-				coins -= 5
-				game.AddItem(g.Player.Name, "coin", -5)
-				game.PurchaseItem(g.Player.Name, "childhood", 1)
-				
-				// Render item screen
-				g.Player.Sprite.X = 75
-				g.Player.Sprite.Y = 20
-				Slides(
-					screen, 
-					&Image{
-						Path: "assets/childhood/nerd.jpg",
-						Width: 100,
-						Height: 50,
-					},
-					&Image{
-						Path: "assets/childhood/catnerd.jpg",
-						Width: 80,
-						Height: 45,
-					},
-					&Image{
-						Path: "assets/childhood/steam.png",
-						Width: 80,
-						Height: 27,
-					},
-					&Image{
-						Path: "assets/childhood/band.JPG",
-						Width: 70,
-						Height: 50,
-					},
-				)
-			}
-		}
-		if g.Player.Sprite.X == NOW_POINT.X && g.Player.Sprite.Y == NOW_POINT.Y {
-			if  _, exists := ITEMS["now"]; exists{
-				g.Player.Sprite.X = 75
-				g.Player.Sprite.Y = 20
-				Slides(
-					screen, 
-					&Image{
-						Path: "assets/now/sledset.jpg",
-						Width: 100,
-						Height: 50,
-					},
-					&Image{
-						Path: "assets/now/nyc.JPG",
-						Width: 90,
-						Height: 49,
-					},
-					&Image{
-						Path: "assets/now/comedy.JPG",
-						Width: 150,
-						Height: 50,
-					},
-					&Image{
-						Path: "assets/now/nyc.JPG",
-						Width: 90,
-						Height: 49,
-					},
-					&Image{
-						Path: "assets/now/comedy.JPG",
-						Width: 150,
-						Height: 50,
-					},
-					&Image{
-						Path: "assets/now/cave.JPG",
-						Width: 100,
-						Height: 49,
-					},
-				)	
-			} else if coins >= 7 {
-				coins -= 7
-				game.AddItem(g.Player.Name, "coin", -7)
-				game.PurchaseItem(g.Player.Name, "now", 1)
-				
-				// Render item screen
-				g.Player.Sprite.X = 75
-				g.Player.Sprite.Y = 20
-				Slides(
-					screen, 
-					&Image{
-						Path: "assets/now/sledset.jpg",
-						Width: 100,
-						Height: 50,
-					},
-					&Image{
-						Path: "assets/now/nyc.JPG",
-						Width: 90,
-						Height: 49,
-					},
-					&Image{
-						Path: "assets/now/comedy.JPG",
-						Width: 150,
-						Height: 50,
-					},
-					&Image{
-						Path: "assets/now/cave.JPG",
-						Width: 100,
-						Height: 49,
-					},
-				)
-			}
-		}
-		if g.Player.Sprite.X == FUTURE_POINT.X && g.Player.Sprite.Y == FUTURE_POINT.Y {
-			if  _, exists := ITEMS["future"]; exists{
-				g.Player.Sprite.X = 75
-				g.Player.Sprite.Y = 20
-				Slides(
-					screen, 
-					&Image{
-						Path: "assets/future/seattle.jpg",
-						Width: 100,
-						Height: 50,
-					},
-					&Image{
-						Path: "assets/future/gopher.png",
-						Width: 100,
-						Height: 50,
-					},
-					&Image{
-						Path: "assets/future/dart.png",
-						Width: 100,
-						Height: 50,
-					},
-				)	
-			} else if coins >= 10 {
-				coins -= 10
-				game.AddItem(g.Player.Name, "coin", -10)
-				game.PurchaseItem(g.Player.Name, "future", 1)
-				
-				// Render item screen
-				g.Player.Sprite.X = 75
-				g.Player.Sprite.Y = 20
-				Slides(
-					screen, 
-					&Image{
-						Path: "assets/future/seattle.jpg",
-						Width: 100,
-						Height: 50,
-					},
-					&Image{
-						Path: "assets/future/gopher.png",
-						Width: 100,
-						Height: 50,
-					},
-					&Image{
-						Path: "assets/future/dart.png",
-						Width: 100,
-						Height: 50,
-					},
-				)
+		for _, item := range shopItems {
+			if g.Player.Sprite.X == item.Position.X && g.Player.Sprite.Y == item.Position.Y {
+				handleItemPurchase(screen, g, ITEMS, item, coins)
 			}
 		}
 			
@@ -348,4 +210,6 @@ func Shop(screen tcell.Screen, g *game.Game, coins int) {
 	
 		<-ticker.C
 	}
+
+
 }

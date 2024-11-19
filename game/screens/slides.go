@@ -6,7 +6,7 @@ import (
 	"github.com/gdamore/tcell/v2"
 )
 
-func Slides(screen tcell.Screen, imgs ...*Image) {	
+func Slides(screen tcell.Screen, imgs []*Image) {	
 	for _, img := range imgs {
 		// first picture
 		screen.Clear()

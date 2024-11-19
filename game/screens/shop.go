@@ -24,18 +24,19 @@ type ShopItem struct {
 	Slides   []*Image
 }
 
-func handleItemPurchase(screen tcell.Screen, g *game.Game, items map[string]struct{}, item ShopItem, coins int) {
-	if _, exists := items[item.Name]; exists {
+func handleItemPurchase(screen tcell.Screen, g *game.Game, items *map[string]struct{}, item ShopItem, coins *int) {
+	if _, exists := (*items)[item.Name]; exists {
 		g.Player.Sprite.X = 75
 		g.Player.Sprite.Y = 20
 		Slides(screen, item.Slides)
 		return
 	}
 	
-	if coins >= item.Cost {
-		coins -= item.Cost
+	if *coins >= item.Cost {
+		*coins -= item.Cost
 		game.AddItem(g.Player.Name, "coin", -item.Cost)
 		game.PurchaseItem(g.Player.Name, item.Name, 1)
+		(*items)[item.Name] = struct{}{}
 		
 		g.Player.Sprite.X = 75
 		g.Player.Sprite.Y = 20
@@ -70,19 +71,19 @@ func Shop(screen tcell.Screen, g *game.Game, coins int) {
 	NOW_POINT := game.Point{X: LEFT_BORDER_X + MAP_WIDTH - X_OFFSET, Y: TOP_BORDER_Y + Y_OFFSET}
 	FUTURE_POINT := game.Point{X: LEFT_BORDER_X + MAP_WIDTH - X_OFFSET, Y: TOP_BORDER_Y + MAP_HEIGHT - Y_OFFSET}
 
-	ITEMS := make(map[string]struct{}, 0)
+	owned := make(map[string]struct{}, 0)
 
 	if game.CheckInventory(g.Player.Name, "background") == 1 {
-		ITEMS["background"] = struct{}{}
+		owned["background"] = struct{}{}
 	}
 	if game.CheckInventory(g.Player.Name, "childhood") == 1 {
-		ITEMS["childhood"] = struct{}{}
+		owned["childhood"] = struct{}{}
 	}
 	if game.CheckInventory(g.Player.Name, "now") == 1 {
-		ITEMS["now"] = struct{}{}
+		owned["now"] = struct{}{}
 	}
 	if game.CheckInventory(g.Player.Name, "future") == 1 {
-		ITEMS["future"] = struct{}{}
+		owned["future"] = struct{}{}
 	}
 
 	shopItems := []ShopItem{
@@ -157,7 +158,11 @@ func Shop(screen tcell.Screen, g *game.Game, coins int) {
 
 		// draw items
 		for _, item := range shopItems {
-			game.DrawString(screen, item.LabelX, item.Position.Y, item.Label)
+			if _, exists := owned[item.Name]; exists {
+				game.DrawString(screen, item.LabelX, item.Position.Y, item.Name + " (OWNED)")
+			} else {
+				game.DrawString(screen, item.LabelX, item.Position.Y, item.Label)
+			}
 			game.DrawString(screen, item.Position.X, item.Position.Y, item.Symbol)
 		}
 
@@ -196,7 +201,7 @@ func Shop(screen tcell.Screen, g *game.Game, coins int) {
 		// check collisions with items
 		for _, item := range shopItems {
 			if g.Player.Sprite.X == item.Position.X && g.Player.Sprite.Y == item.Position.Y {
-				handleItemPurchase(screen, g, ITEMS, item, coins)
+				handleItemPurchase(screen, g, &owned, item, &coins)
 			}
 		}
 			

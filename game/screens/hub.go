@@ -9,18 +9,21 @@ import (
 )
 
 func Hub(screen tcell.Screen, g *game.Game) *Action {
+	// fps counter initialization
 	fps := 0
 	frameCount := 0
 	lastFPSUpdate := time.Now()
 	ticker := time.NewTicker(time.Second / 30)
 	defer ticker.Stop()
 
+	// portal coordinates
 	PLAY_PORTAL_X := 35
 	PLAY_PORTAL_Y := 25
 
 	SHOP_PORTAL_X := 70
 	SHOP_PORTAL_Y := 10
 
+	// fetch player's coins
 	coins := game.GetCoins(g.Player.Name)
 
 	// game loop

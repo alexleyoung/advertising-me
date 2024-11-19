@@ -8,6 +8,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
+// initialize db if it doesn't exist
 func InitSaves() {
 	db, err := sql.Open("sqlite3", "./game_data.db")
 	if err != nil {
@@ -49,6 +50,7 @@ func InitSaves() {
 	}
 }
 
+// player CRUD
 func CreatePlayer(name string) {
 	AddItem(name, "coin", 0)
 	AddItem(name, "background", 0)
@@ -112,6 +114,34 @@ func GetPlayers() []string {
 	return players
 }
 
+func RemovePlayer(name string) {
+	db, err := sql.Open("sqlite3", "./game_data.db")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
+	stmt, err := db.Prepare("DELETE FROM players WHERE name = ?")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(name)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+// score CRUD
+type Score struct {
+	id         int
+	Player     string
+	Score      int
+	NearMisses int
+	Timestamp  int
+}
+
 func SavePlayerData(name string, score int, nearMisses int, timestamp int64) {
 	db, err := sql.Open("sqlite3", "./game_data.db")
 	if err != nil {
@@ -129,14 +159,6 @@ func SavePlayerData(name string, score int, nearMisses int, timestamp int64) {
 	if err != nil {
 		log.Fatal(err)
 	}
-}
-
-type Score struct {
-	id         int
-	Player     string
-	Score      int
-	NearMisses int
-	Timestamp  int
 }
 
 func GetHighScores() []*Score {
@@ -170,6 +192,7 @@ func GetHighScores() []*Score {
 	return scores
 }
 
+// inventory CRUD
 func AddItem(player, item string, count int) {
 	db, err := sql.Open("sqlite3", "./game_data.db")
 	if err != nil {
@@ -214,25 +237,6 @@ func GetCoins(name string) int {
 	}
 
 	return count
-}
-
-func RemovePlayer(name string) {
-	db, err := sql.Open("sqlite3", "./game_data.db")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer db.Close()
-
-	stmt, err := db.Prepare("DELETE FROM players WHERE name = ?")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer stmt.Close()
-
-	_, err = stmt.Exec(name)
-	if err != nil {
-		log.Fatal(err)
-	}
 }
 
 func PurchaseItem(player, item string, count int) {

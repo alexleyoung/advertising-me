@@ -51,34 +51,85 @@ func handleItemPurchase(
 }
 
 func Shop(screen tcell.Screen, g *game.Game, coins int) {
+	// fps counter initialization
 	fps := 0
 	frameCount := 0
 	lastFPSUpdate := time.Now()
 	ticker := time.NewTicker(time.Second / 30)
 	defer ticker.Stop()
 
-	SHOP_TEXT := `
-	███████  ██   ██  ███████   ██████ 
-	██       ██   ██  ██   ██   ██  ██
-	███████  ███████  ██   ██   ██████
-	     ██  ██   ██  ██   ██   ██
-	███████  ██   ██  ███████   ██
-	----------------------------------
-	`
+	// map dimensions
 	MAP_HEIGHT := 30
 	MAP_WIDTH := 78
 	LEFT_BORDER_X := 40
 	TOP_BORDER_Y := 10
 
+	// offsets for item placements
 	X_OFFSET := 5
 	Y_OFFSET := 5
-	BACKGROUND_POINT := game.Point{X: LEFT_BORDER_X + X_OFFSET, Y: TOP_BORDER_Y + Y_OFFSET}
-	CHILDHOOD_POINT := game.Point{X: LEFT_BORDER_X + X_OFFSET, Y: TOP_BORDER_Y + MAP_HEIGHT - Y_OFFSET}
-	NOW_POINT := game.Point{X: LEFT_BORDER_X + MAP_WIDTH - X_OFFSET, Y: TOP_BORDER_Y + Y_OFFSET}
-	FUTURE_POINT := game.Point{X: LEFT_BORDER_X + MAP_WIDTH - X_OFFSET, Y: TOP_BORDER_Y + MAP_HEIGHT - Y_OFFSET}
 
+	// init shop items
+	SHOP_ITEMS := []ShopItem{
+		{
+			Name:     "background",
+			Cost:     3,
+			Symbol:   "🌳",
+			Position: game.Point{X: LEFT_BORDER_X + X_OFFSET, Y: TOP_BORDER_Y + Y_OFFSET},
+			LabelX:   game.Point{X: LEFT_BORDER_X + X_OFFSET, Y: TOP_BORDER_Y + Y_OFFSET}.X - 30,
+			Label:    "BACKGROUND (3 COINS) ->",
+			Slides: []*Image{
+				{Path: "assets/background/sister.JPG", Width: 100, Height: 50},
+				{Path: "assets/background/boat.JPG", Width: 150, Height: 50},
+			},
+		},
+		{
+			Name:     "childhood",
+			Cost:     5,
+			Symbol:   "🧸",
+			Position: game.Point{X: LEFT_BORDER_X + X_OFFSET, Y: TOP_BORDER_Y + MAP_HEIGHT - Y_OFFSET},
+			LabelX:   game.Point{X: LEFT_BORDER_X + X_OFFSET, Y: TOP_BORDER_Y + MAP_HEIGHT - Y_OFFSET}.X - 29,
+			Label:    "CHILDHOOD (5 COINS) ->",
+			Slides: []*Image{
+				{Path: "assets/childhood/nerd.jpg", Width: 100, Height: 50},
+				{Path: "assets/childhood/catnerd.jpg", Width: 80, Height: 45},
+				{Path: "assets/childhood/steam.png", Width: 80, Height: 27},
+				{Path: "assets/childhood/band.JPG", Width: 70, Height: 50},
+			},
+		},
+		{
+			Name:     "now",
+			Cost:     7,
+			Symbol:   "😎",
+			Position: game.Point{X: LEFT_BORDER_X + MAP_WIDTH - X_OFFSET, Y: TOP_BORDER_Y + Y_OFFSET},
+			LabelX:   game.Point{X: LEFT_BORDER_X + MAP_WIDTH - X_OFFSET, Y: TOP_BORDER_Y + Y_OFFSET}.X + 9,
+			Label:    "<- NOW (7 COINS)",
+			Slides: []*Image{
+				{Path: "assets/now/sledset.jpg", Width: 100, Height: 50},
+				{Path: "assets/now/nyc.JPG", Width: 90, Height: 49},
+				{Path: "assets/now/comedy.JPG", Width: 150, Height: 50},
+				{Path: "assets/now/cave.JPG", Width: 100, Height: 49},
+				{Path: "assets/now/alexcolin.jpg", Width: 160, Height: 49},
+				{Path: "assets/now/g2halloween.JPG", Width: 160, Height: 49},
+				{Path: "assets/now/linkedin.JPG", Width: 160, Height: 49},
+			},
+		},
+		{
+			Name:     "future",
+			Cost:     10,
+			Symbol:   "🏙️",
+			Position: game.Point{X: LEFT_BORDER_X + MAP_WIDTH - X_OFFSET, Y: TOP_BORDER_Y + MAP_HEIGHT - Y_OFFSET},
+			LabelX:   game.Point{X: LEFT_BORDER_X + MAP_WIDTH - X_OFFSET, Y: TOP_BORDER_Y + MAP_HEIGHT - Y_OFFSET}.X + 9,
+			Label:    "<- FUTURE (10 COINS)",
+			Slides: []*Image{
+				{Path: "assets/future/seattle.jpg", Width: 100, Height: 50},
+				{Path: "assets/future/gopher.png", Width: 100, Height: 50},
+				{Path: "assets/future/dart.png", Width: 100, Height: 50},
+			},
+		},
+	}
+
+	// init players current inventory
 	owned := make(map[string]struct{}, 0)
-
 	if game.CheckInventory(g.Player.Name, "background") == 1 {
 		owned["background"] = struct{}{}
 	}
@@ -92,62 +143,6 @@ func Shop(screen tcell.Screen, g *game.Game, coins int) {
 		owned["future"] = struct{}{}
 	}
 
-	shopItems := []ShopItem{
-		{
-			Name:     "background",
-			Cost:     3,
-			Symbol:   "🌳",
-			Position: BACKGROUND_POINT,
-			LabelX:   BACKGROUND_POINT.X - 30,
-			Label:    "BACKGROUND (3 COINS) ->",
-			Slides: []*Image{
-				{Path: "assets/background/sister.JPG", Width: 100, Height: 50},
-				{Path: "assets/background/boat.JPG", Width: 150, Height: 50},
-			},
-		},
-		{
-			Name:     "childhood",
-			Cost:     5,
-			Symbol:   "🧸",
-			Position: CHILDHOOD_POINT,
-			LabelX:   CHILDHOOD_POINT.X - 29,
-			Label:    "CHILDHOOD (5 COINS) ->",
-			Slides: []*Image{
-				{Path: "assets/childhood/nerd.jpg", Width: 100, Height: 50},
-				{Path: "assets/childhood/catnerd.jpg", Width: 80, Height: 45},
-				{Path: "assets/childhood/steam.png", Width: 80, Height: 27},
-				{Path: "assets/childhood/band.JPG", Width: 70, Height: 50},
-			},
-		},
-		{
-			Name:     "now",
-			Cost:     7,
-			Symbol:   "😎",
-			Position: NOW_POINT,
-			LabelX:   NOW_POINT.X + 9,
-			Label:    "<- NOW (7 COINS)",
-			Slides: []*Image{
-				{Path: "assets/now/sledset.jpg", Width: 100, Height: 50},
-				{Path: "assets/now/nyc.JPG", Width: 90, Height: 49},
-				{Path: "assets/now/comedy.JPG", Width: 150, Height: 50},
-				{Path: "assets/now/cave.JPG", Width: 100, Height: 49},
-			},
-		},
-		{
-			Name:     "future",
-			Cost:     10,
-			Symbol:   "🏙️",
-			Position: FUTURE_POINT,
-			LabelX:   FUTURE_POINT.X + 9,
-			Label:    "<- FUTURE (10 COINS)",
-			Slides: []*Image{
-				{Path: "assets/future/seattle.jpg", Width: 100, Height: 50},
-				{Path: "assets/future/gopher.png", Width: 100, Height: 50},
-				{Path: "assets/future/dart.png", Width: 100, Height: 50},
-			},
-		},
-	}
-
 	for {
 		// draw logic
 		screen.Clear()
@@ -159,11 +154,11 @@ func Shop(screen tcell.Screen, g *game.Game, coins int) {
 		g.Player.Sprite.Draw(screen)
 
 		// draw map
-		game.DrawString(screen, 63, 0, SHOP_TEXT)
+		game.DrawString(screen, 63, 0, game.SHOP_TEXT)
 		game.DrawRect(screen, LEFT_BORDER_X, TOP_BORDER_Y, MAP_WIDTH, MAP_HEIGHT, tcell.StyleDefault)
 
 		// draw items
-		for _, item := range shopItems {
+		for _, item := range SHOP_ITEMS {
 			if _, exists := owned[item.Name]; exists {
 				game.DrawString(screen, item.LabelX, item.Position.Y, item.Name+" (OWNED)")
 			} else {
@@ -205,7 +200,7 @@ func Shop(screen tcell.Screen, g *game.Game, coins int) {
 		}
 
 		// check collisions with items
-		for _, item := range shopItems {
+		for _, item := range SHOP_ITEMS {
 			if g.Player.Sprite.X == item.Position.X && g.Player.Sprite.Y == item.Position.Y {
 				handleItemPurchase(screen, g, &owned, item, &coins)
 			}

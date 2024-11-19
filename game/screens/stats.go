@@ -23,7 +23,6 @@ func Stats(screen tcell.Screen) {
 	screen.Show()
 
 	for {
-
 		ev := screen.PollEvent()
 		switch ev := ev.(type) {
 		case *tcell.EventKey:

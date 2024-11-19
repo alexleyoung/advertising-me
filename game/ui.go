@@ -31,17 +31,6 @@ func DrawColorString(screen tcell.Screen, x, y int, s string, color tcell.Style)
 	}
 }
 
-func DrawTable(screen tcell.Screen, x, y int, t table.Writer) {
-	t.SetStyle(table.StyleLight)
-
-	content := t.Render()
-	DrawString(screen, x, y, content)
-}
-
-func ImgToAscii(path string, x, y int) string {
-	return quickscii.Convert(path, x, y)
-}
-
 func DrawRect(screen tcell.Screen, x, y, w, h int, style tcell.Style) {
 	for j := y; j < y+h; j++ {
 		screen.SetContent(x, j, '|', nil, style)
@@ -51,4 +40,15 @@ func DrawRect(screen tcell.Screen, x, y, w, h int, style tcell.Style) {
 		screen.SetContent(i, y, '-', nil, style)
 		screen.SetContent(i, y+h, '-', nil, style)
 	}
+}
+
+func DrawTable(screen tcell.Screen, x, y int, t table.Writer) {
+	t.SetStyle(table.StyleLight)
+
+	content := t.Render()
+	DrawString(screen, x, y, content)
+}
+
+func ImgToAscii(path string, x, y int) string {
+	return quickscii.Convert(path, x, y)
 }

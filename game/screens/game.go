@@ -14,6 +14,7 @@ func Game(screen tcell.Screen, g *game.Game) {
 	coinColor := tcell.StyleDefault.Foreground(tcell.ColorYellow)
 	projectileColor := tcell.StyleDefault.Foreground(tcell.ColorRed)
 
+	// fps counter initialization
 	fps := 0
 	frameCount := 0
 	lastFPSUpdate := time.Now()
@@ -90,7 +91,7 @@ func Game(screen tcell.Screen, g *game.Game) {
 					g.Alive = false
 				}
 
-				// chcek for near miss
+				// check for near miss
 				if math.Abs(float64(projectile.Sprite.X-g.Player.Sprite.X)) == 1 && math.Abs(float64(projectile.Sprite.Y-g.Player.Sprite.Y)) == 1 {
 					g.Player.Score++
 					g.Player.NearMisses++
@@ -100,8 +101,10 @@ func Game(screen tcell.Screen, g *game.Game) {
 			// draw logic
 			screen.Clear()
 
+			// draw map border
 			game.DrawRect(screen, game.LEFT_BORDER_X, game.TOP_BORDER_Y, game.MAP_WIDTH, game.MAP_HEIGHT, tcell.StyleDefault)
 
+			// draw player, coins, projectilees
 			g.Player.Sprite.Draw(screen)
 			for _, coin := range g.Coins {
 				coin.Draw(screen)
@@ -109,6 +112,8 @@ func Game(screen tcell.Screen, g *game.Game) {
 			for _, projectile := range g.Projectiles {
 				projectile.Sprite.Draw(screen)
 			}
+
+			// draw ui
 			game.DrawString(screen, 0, 0, g.Player.Name)
 			game.DrawString(screen, 0, 1, fmt.Sprintf("Score: %d", g.Player.Score))
 			game.DrawString(screen, 0, 2, fmt.Sprintf("Level: %d", g.Level))
@@ -132,7 +137,7 @@ func Game(screen tcell.Screen, g *game.Game) {
 			game.SavePlayerData(g.Player.Name, g.Player.Score, g.Player.NearMisses, time.Now().Unix())
 			game.AddItem(g.Player.Name, "coin", g.Player.Coins)
 
-			// draw game over screen
+			// draw game over
 			game.DrawString(screen, 70, 20, "GAME OVER")
 			game.DrawString(screen, 50, 22, "Press any key to restart, or ESC to go back to the hub")
 			screen.Show()

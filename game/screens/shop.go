@@ -41,6 +41,21 @@ func Shop(screen tcell.Screen, g *game.Game, coins int) {
 	NOW_POINT := game.Point{X: LEFT_BORDER_X + MAP_WIDTH - X_OFFSET, Y: TOP_BORDER_Y + Y_OFFSET}
 	FUTURE_POINT := game.Point{X: LEFT_BORDER_X + MAP_WIDTH - X_OFFSET, Y: TOP_BORDER_Y + MAP_HEIGHT - Y_OFFSET}
 
+	ITEMS := make(map[string]struct{}, 0)
+
+	if game.CheckInventory(g.Player.Name, "background") == 1 {
+		ITEMS["background"] = struct{}{}
+	}
+	if game.CheckInventory(g.Player.Name, "childhood") == 1 {
+		ITEMS["childhood"] = struct{}{}
+	}
+	if game.CheckInventory(g.Player.Name, "now") == 1 {
+		ITEMS["now"] = struct{}{}
+	}
+	if game.CheckInventory(g.Player.Name, "future") == 1 {
+		ITEMS["future"] = struct{}{}
+	}
+
 	for {	
 		// draw logic
 		screen.Clear()
@@ -101,11 +116,28 @@ func Shop(screen tcell.Screen, g *game.Game, coins int) {
 			}
 		}	
 
-		// check collisions with portals
+		// check collisions with items
 		if g.Player.Sprite.X == BACKGROUND_POINT.X && g.Player.Sprite.Y == BACKGROUND_POINT.Y {
-			if coins >= 3 {
+			if ITEMS["background"] == struct{}{} {
+				g.Player.Sprite.X = 75
+				g.Player.Sprite.Y = 20
+				Slides(
+					screen, 
+					&Image{
+						Path: "assets/background/sister.JPG",
+						Width: 100,
+						Height: 50,
+					},
+					&Image{
+						Path: "assets/background/boat.JPG",
+						Width: 150,
+						Height: 50,
+					},
+				)	
+			} else if coins >= 3 {
 				coins -= 3
-				game.AddCoins(g.Player.Name, -3)
+				game.AddItem(g.Player.Name, "coin", -3)
+				game.PurchaseItem(g.Player.Name, "background", 1)
 				
 				// Render item screen
 				g.Player.Sprite.X = 75
@@ -126,9 +158,36 @@ func Shop(screen tcell.Screen, g *game.Game, coins int) {
 			}
 		}
 		if g.Player.Sprite.X == CHILDHOOD_POINT.X && g.Player.Sprite.Y == CHILDHOOD_POINT.Y {
-			if coins >= 5 {
+			if ITEMS["childhood"] == struct{}{} {
+				g.Player.Sprite.X = 75
+				g.Player.Sprite.Y = 20
+				Slides(
+					screen, 
+					&Image{
+						Path: "assets/childhood/nerd.jpg",
+						Width: 100,
+						Height: 50,
+					},
+					&Image{
+						Path: "assets/childhood/catnerd.jpg",
+						Width: 80,
+						Height: 45,
+					},
+					&Image{
+						Path: "assets/childhood/steam.png",
+						Width: 80,
+						Height: 27,
+					},
+					&Image{
+						Path: "assets/childhood/band.JPG",
+						Width: 70,
+						Height: 50,
+					},
+				)	
+			} else if coins >= 5 {
 				coins -= 5
-				game.AddCoins(g.Player.Name, -5)
+				game.AddItem(g.Player.Name, "coin", -5)
+				game.PurchaseItem(g.Player.Name, "childhood", 1)
 				
 				// Render item screen
 				g.Player.Sprite.X = 75
@@ -159,9 +218,46 @@ func Shop(screen tcell.Screen, g *game.Game, coins int) {
 			}
 		}
 		if g.Player.Sprite.X == NOW_POINT.X && g.Player.Sprite.Y == NOW_POINT.Y {
-			if coins >= 7 {
+			if ITEMS["now"] == struct{}{} {
+				g.Player.Sprite.X = 75
+				g.Player.Sprite.Y = 20
+				Slides(
+					screen, 
+					&Image{
+						Path: "assets/now/sledset.jpg",
+						Width: 100,
+						Height: 50,
+					},
+					&Image{
+						Path: "assets/now/nyc.JPG",
+						Width: 90,
+						Height: 49,
+					},
+					&Image{
+						Path: "assets/now/comedy.JPG",
+						Width: 150,
+						Height: 50,
+					},
+					&Image{
+						Path: "assets/now/nyc.JPG",
+						Width: 90,
+						Height: 49,
+					},
+					&Image{
+						Path: "assets/now/comedy.JPG",
+						Width: 150,
+						Height: 50,
+					},
+					&Image{
+						Path: "assets/now/cave.JPG",
+						Width: 100,
+						Height: 49,
+					},
+				)	
+			} else if coins >= 7 {
 				coins -= 7
-				game.AddCoins(g.Player.Name, -7)
+				game.AddItem(g.Player.Name, "coin", -7)
+				game.PurchaseItem(g.Player.Name, "now", 1)
 				
 				// Render item screen
 				g.Player.Sprite.X = 75
@@ -192,9 +288,31 @@ func Shop(screen tcell.Screen, g *game.Game, coins int) {
 			}
 		}
 		if g.Player.Sprite.X == FUTURE_POINT.X && g.Player.Sprite.Y == FUTURE_POINT.Y {
-			if coins >= 10 {
+			if ITEMS["future"] == struct{}{} {
+				g.Player.Sprite.X = 75
+				g.Player.Sprite.Y = 20
+				Slides(
+					screen, 
+					&Image{
+						Path: "assets/future/seattle.jpg",
+						Width: 100,
+						Height: 50,
+					},
+					&Image{
+						Path: "assets/future/gopher.png",
+						Width: 100,
+						Height: 50,
+					},
+					&Image{
+						Path: "assets/future/dart.png",
+						Width: 100,
+						Height: 50,
+					},
+				)	
+			} else if coins >= 10 {
 				coins -= 10
-				game.AddCoins(g.Player.Name, -10)
+				game.AddItem(g.Player.Name, "coin", -10)
+				game.PurchaseItem(g.Player.Name, "future", 1)
 				
 				// Render item screen
 				g.Player.Sprite.X = 75

@@ -50,7 +50,11 @@ func InitSaves() {
 }
 
 func CreatePlayer(name string) {
-	AddCoins(name, 0)	
+	AddItem(name, "coins", 0)	
+	AddItem(name, "background", 0)
+	AddItem(name, "childhood", 0)
+	AddItem(name, "now", 0)
+	AddItem(name, "future", 0)
 
 	name = strings.ToLower(name)
 	db, err := sql.Open("sqlite3", "./game_data.db")
@@ -166,7 +170,7 @@ func GetHighScores() []*Score {
 	return scores
 }
 
-func AddCoins(name string, count int) {
+func AddItem(player, item string, count int) {
 	db, err := sql.Open("sqlite3", "./game_data.db")
 	if err != nil {
 		log.Fatal(err)
@@ -184,7 +188,7 @@ func AddCoins(name string, count int) {
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(name, "coins", count)
+	_, err = stmt.Exec(player, item, count)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -229,4 +233,50 @@ func RemovePlayer(name string) {
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+func PurchaseItem(player, item string, count int) {
+	db, err := sql.Open("sqlite3", "./game_data.db")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
+	stmt, err := db.Prepare(`
+	INSERT INTO inventory (player, item, count) 
+	VALUES (?, ?, ?) 
+	ON CONFLICT (player, item) 
+	DO UPDATE SET count = inventory.count + excluded.count
+	`) 
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(player, item, count)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func CheckInventory(player, item string) int {
+	db, err := sql.Open("sqlite3", "./game_data.db")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
+	stmt, err := db.Prepare("SELECT count FROM inventory WHERE player = ? AND item = ?")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	var count int
+	err = stmt.QueryRow(player, item).Scan(&count)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return count
 }

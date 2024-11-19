@@ -130,7 +130,7 @@ func Game(screen tcell.Screen, g *game.Game) {
 			// player death logic
 			// save score
 			game.SavePlayerData(g.Player.Name, g.Player.Score, g.Player.NearMisses, time.Now().Unix())
-			game.AddCoins(g.Player.Name, g.Player.Coins)
+			game.AddItem(g.Player.Name, "coin", g.Player.Coins)
 
 			// draw game over screen
 			game.DrawString(screen, 70, 20, "GAME OVER")
